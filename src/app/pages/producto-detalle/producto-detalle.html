@@ -1,0 +1,75 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <a routerLink="/catalogo" class="text-sm text-slate-500 hover:text-amber-600 flex items-center gap-1 mb-6">
+    <i class="pi pi-arrow-left"></i> Volver al catálogo
+  </a>
+
+  @if (cargando()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <p-skeleton width="100%" height="420px" borderRadius="16px"></p-skeleton>
+      <div class="space-y-4">
+        <p-skeleton width="60%" height="2rem"></p-skeleton>
+        <p-skeleton width="30%" height="1.5rem"></p-skeleton>
+        <p-skeleton width="100%" height="6rem"></p-skeleton>
+        <p-skeleton width="40%" height="2.5rem"></p-skeleton>
+      </div>
+    </div>
+  } @else {
+    @if (producto(); as p) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div class="bg-slate-100 rounded-2xl overflow-hidden aspect-square">
+          @if (p.imagen_url) {
+            <img [src]="p.imagen_url" [alt]="p.nombre" class="w-full h-full object-cover">
+          } @else {
+            <div class="w-full h-full flex items-center justify-center text-slate-300">
+              <i class="pi pi-image text-7xl"></i>
+            </div>
+          }
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-sm text-slate-500 uppercase tracking-wide">{{ p.marca?.nombre }}</span>
+            <span class="text-slate-300">·</span>
+            <span class="text-sm text-slate-500">{{ p.categoria?.nombre }}</span>
+          </div>
+
+          <h1 class="text-3xl font-bold text-slate-900 mb-4">{{ p.nombre }}</h1>
+
+          <div class="flex items-center gap-3 mb-6">
+            <span class="text-3xl font-black text-slate-900">
+              $ {{ p.precio.toLocaleString('es-AR') }}
+            </span>
+            <p-tag [value]="'por ' + p.unidad_medida" severity="secondary" [rounded]="true"></p-tag>
+            @if (p.stock > 0) {
+              <p-tag value="En stock" severity="success" [rounded]="true"></p-tag>
+            } @else {
+              <p-tag value="Sin stock" severity="danger" [rounded]="true"></p-tag>
+            }
+          </div>
+
+          <p-divider></p-divider>
+
+          <h2 class="font-semibold text-slate-700 mb-2">Descripción</h2>
+          <p class="text-slate-600 mb-6">{{ p.descripcion }}</p>
+
+          <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 mb-6 text-sm">
+            <p class="flex items-center gap-2 text-slate-600"><i class="pi pi-box text-amber-500"></i> Stock disponible: <b>{{ p.stock }}</b> {{ p.unidad_medida }}(s)</p>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" (onClick)="agregarAlCarrito()" [disabled]="p.stock === 0"></p-button>
+            <a routerLink="/catalogo">
+              <p-button label="Seguir comprando" severity="secondary" [outlined]="true" icon="pi pi-th-large"></p-button>
+            </a>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="text-center py-20 text-slate-400">
+        <i class="pi pi-exclamation-triangle text-5xl block mb-4"></i>
+        <p class="font-semibold">Producto no encontrado</p>
+        <a routerLink="/catalogo" class="text-amber-600 text-sm hover:underline">Volver al catálogo</a>
+      </div>
+    }
+  }
+</div>

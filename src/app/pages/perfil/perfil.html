@@ -1,0 +1,31 @@
+<div class="max-w-3xl mx-auto px-4 py-8">
+  <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div class="bg-slate-900 px-6 py-8 text-white">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center text-2xl font-black">
+          SR
+        </div>
+        <div>
+          <h1 class="text-xl font-bold">{{ usuario.nombre }}</h1>
+          <p class="text-slate-300 text-sm">{{ usuario.email }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-slate-500">Rol asignado</span>
+        <p-tag [value]="usuario.rol" severity="warn" icon="pi pi-shield"></p-tag>
+      </div>
+      <p-divider></p-divider>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-slate-500">Acceso al panel administrativo</span>
+        <i class="pi pi-check-circle text-green-500 text-lg"></i>
+      </div>
+      <p-divider></p-divider>
+      <p class="text-sm text-slate-400">
+        Esta pantalla es el acceso al perfil del usuario Administrador, una de las responsabilidades del componente Header según el tipo de usuario iniciado.
+      </p>
+    </div>
+  </div>
+</div>
