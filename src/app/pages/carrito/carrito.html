@@ -1,0 +1,81 @@
+<div class="max-w-5xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-slate-900 mb-6">Carrito de compras</h1>
+
+  @if (items().length === 0) {
+    <div class="text-center py-20">
+      <i class="pi pi-shopping-cart text-6xl text-slate-300 block mb-6"></i>
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Tu carrito está vacío</h2>
+      <p class="text-slate-500 mb-8">Explorá el catálogo y agregá los materiales que necesitás para tu obra o taller.</p>
+      <a routerLink="/catalogo">
+        <p-button label="Ir al catálogo" icon="pi pi-th-large"></p-button>
+      </a>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-4">
+        @for (item of items(); track item.producto.id) {
+          <div class="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4">
+            @if (item.producto.imagen_url) {
+              <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="w-20 h-20 rounded-lg object-cover">
+            } @else {
+              <div class="w-20 h-20 rounded-lg bg-slate-100 flex items-center justify-center text-slate-300">
+                <i class="pi pi-image text-2xl"></i>
+              </div>
+            }
+
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-slate-800 line-clamp-1">{{ item.producto.nombre }}</p>
+              <p class="text-sm text-slate-500">$ {{ item.producto.precio.toLocaleString('es-AR') }} por {{ item.producto.unidad_medida }}</p>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <p-button icon="pi pi-minus" severity="secondary" [text]="true" [rounded]="true" (onClick)="restar(item.producto.id)" [disabled]="item.cantidad === 1"></p-button>
+              <span class="w-8 text-center font-bold text-slate-800">{{ item.cantidad }}</span>
+              <p-button icon="pi pi-plus" severity="secondary" [text]="true" [rounded]="true" (onClick)="sumar(item.producto.id)"></p-button>
+            </div>
+
+            <div class="text-right w-32">
+              <p class="font-bold text-slate-900">$ {{ subtotal(item).toLocaleString('es-AR') }}</p>
+              <p-button icon="pi pi-trash" severity="danger" [text]="true" [rounded]="true" (onClick)="eliminar(item.producto.id)" title="Eliminar producto"></p-button>
+            </div>
+          </div>
+        }
+
+        <div class="flex justify-between">
+          <p-button label="Vaciar carrito" icon="pi pi-trash" severity="danger" [outlined]="true" (onClick)="vaciar()"></p-button>
+          <a routerLink="/catalogo">
+            <p-button label="Seguir comprando" icon="pi pi-arrow-left" severity="secondary" [outlined]="true"></p-button>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="bg-white rounded-xl border border-slate-200 p-6 sticky top-4">
+          <h2 class="font-bold text-lg text-slate-900 mb-4">Resumen de la compra</h2>
+          <p-divider></p-divider>
+
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between text-slate-600">
+              <span>Productos</span>
+              <span>{{ totalItems() }} unidad(es)</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Envío</span>
+              <span>A convenir</span>
+            </div>
+          </div>
+
+          <p-divider></p-divider>
+
+          <div class="flex justify-between items-baseline mb-6">
+            <span class="font-bold text-slate-900">Total</span>
+            <span class="text-2xl font-black text-slate-900">$ {{ totalPrecio().toLocaleString('es-AR') }}</span>
+          </div>
+
+          <p-button label="Finalizar compra" icon="pi pi-check-circle" class="w-full" [disabled]="true"></p-button>
+          <p class="text-xs text-slate-400 mt-2 text-center">El checkout llega en la próxima etapa del proyecto.</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

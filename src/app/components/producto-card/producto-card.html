@@ -1,0 +1,34 @@
+<div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full border border-slate-200">
+  <a [routerLink]="['/producto', producto.id]" class="aspect-square overflow-hidden bg-slate-100">
+    @if (producto.imagen_url) {
+      <img [src]="producto.imagen_url" [alt]="producto.nombre" class="w-full h-full object-cover hover:scale-105 transition-transform">
+    } @else {
+      <div class="w-full h-full flex items-center justify-center text-slate-300">
+        <i class="pi pi-image text-5xl"></i>
+      </div>
+    }
+  </a>
+
+  <div class="p-4 flex flex-col gap-2 flex-1">
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-xs text-slate-500 uppercase tracking-wide">{{ producto.marca?.nombre }}</span>
+      <p-tag [value]="producto.unidad_medida + (producto.stock > 1 ? 's' : '')" severity="secondary" [rounded]="true"></p-tag>
+    </div>
+
+    <a [routerLink]="['/producto', producto.id]" class="font-semibold text-slate-800 line-clamp-2 hover:text-amber-600">
+      {{ producto.nombre }}
+    </a>
+
+    <div class="mt-auto flex items-center justify-between pt-2">
+      <span class="text-lg font-bold text-slate-900">{{ precioFormateado }}</span>
+      @if (!enCarrito) {
+        <p-button label="Agregar" icon="pi pi-cart-plus" (onClick)="onAgregar()" [disabled]="producto.stock === 0"></p-button>
+      } @else {
+        <div class="flex items-center gap-2">
+          <p-tag [value]="cantidadEnCarrito.toString()" severity="warn" [rounded]="true"></p-tag>
+          <p-button label="Quitar" icon="pi pi-minus" severity="danger" [text]="true" (onClick)="onQuitar()"></p-button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

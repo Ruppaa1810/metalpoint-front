@@ -1,0 +1,52 @@
+<div class="space-y-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">Marcas</h1>
+      <p class="text-sm text-slate-500">Administrá las marcas de productos disponibles en la tienda.</p>
+    </div>
+    <p-button label="Nueva marca" icon="pi pi-plus" (onClick)="abrirNueva()"></p-button>
+  </div>
+
+  <p-card>
+    <p-table [value]="marcas()" [paginator]="true" [rows]="10" stripedRows>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Nombre</th>
+          <th style="width: 120px;">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-marca>
+        <tr>
+          <td class="font-medium text-slate-800 flex items-center gap-2">
+            <i class="pi pi-tag text-amber-500"></i> {{ marca.nombre }}
+          </td>
+          <td>
+            <div class="flex gap-1">
+              <p-button icon="pi pi-pencil" severity="secondary" [text]="true" [rounded]="true" (onClick)="abrirEdicion(marca)"></p-button>
+              <p-button icon="pi pi-trash" severity="danger" [text]="true" [rounded]="true" (onClick)="confirmarEliminar($event, marca)"></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <p-confirmdialog></p-confirmdialog>
+
+  <p-dialog [header]="editandoId ? 'Editar marca' : 'Nueva marca'" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '420px' }">
+    <form [formGroup]="formulario" (ngSubmit)="guardar()" class="space-y-4 pt-2">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre *</label>
+        <input pInputText formControlName="nombre" placeholder="Ej: Acindar" class="w-full">
+        @if (formulario.get('nombre')?.invalid && formulario.get('nombre')?.touched) {
+          <small class="text-red-500">El nombre es obligatorio (máx. 50 caracteres).</small>
+        }
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="dialogVisible.set(false)"></p-button>
+        <p-button label="Guardar" icon="pi pi-check" type="submit"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>
