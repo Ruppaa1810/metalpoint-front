@@ -3,13 +3,14 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { ToastModule } from 'primeng/toast';
 import { MenuItem } from 'primeng/api';
 import { CarritoService } from '../../services/carrito.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-public-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, BadgeModule, ButtonModule, MenuModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, BadgeModule, ButtonModule, MenuModule, ToastModule],
   templateUrl: './public-layout.html',
   styleUrl: './public-layout.css',
 })

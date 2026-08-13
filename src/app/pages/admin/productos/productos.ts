@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -11,30 +12,49 @@ import { SelectModule } from 'primeng/select';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TagModule } from 'primeng/tag';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
-import { PRODUCTOS, CATEGORIAS, MARCAS } from '../../../data/mock-data';
+import { ConfirmationService, MessageService } from 'primeng/api';
+
 import { Producto } from '../../../models/producto';
+import { Categoria } from '../../../models/categoria';
+import { Marca } from '../../../models/marca';
+import { ProductoService } from '../../../services/producto.service';
+import { CategoriaService } from '../../../services/categoria.service';
+import { MarcaService } from '../../../services/marca.service';
+import { obtenerMensajeDeError } from '../../../utils/mensajes-error';
+import { PageHeader } from '../../../components/page-header/page-header';
 
 @Component({
   selector: 'app-productos',
   imports: [
     TableModule, ButtonModule, CardModule, DialogModule, InputTextModule, InputNumberModule,
-    TextareaModule, SelectModule, MultiSelectModule, TagModule, ConfirmDialogModule, ReactiveFormsModule
+    TextareaModule, SelectModule, MultiSelectModule, TagModule, ConfirmDialogModule,
+    ReactiveFormsModule, FormsModule, PageHeader
   ],
   providers: [ConfirmationService],
   templateUrl: './productos.html',
   styleUrl: './productos.css',
 })
 export class Productos implements OnInit {
-  productos = signal<Producto[]>(PRODUCTOS);
+  productos = signal<Producto[]>([]);
+  categorias = signal<Categoria[]>([]);
+  marcas = signal<Marca[]>([]);
+  cargando = signal(false);
+  huboError = signal(false);
+
+  // Estado del diálogo de alta/edición
   dialogVisible = signal(false);
-  preciosVisible = signal(false);
+  guardando = signal(false);
   editandoId: number | null = null;
+  imagenFallida = signal(false);
+
+  // Estado del diálogo de actualización masiva de precios
+  preciosVisible = signal(false);
+  idsSeleccionados = signal<number[]>([]);
+  porcentaje = signal<number | null>(null);
+  aplicandoPrecios = signal(false);
 
   formulario!: FormGroup;
 
-  opcionesCategoria = CATEGORIAS.map((c) => ({ label: c.nombre, value: c.id }));
-  opcionesMarca = MARCAS.map((m) => ({ label: m.nombre, value: m.id }));
   opcionesUnidad = [
     { label: 'Unidad', value: 'unidad' },
     { label: 'Metro', value: 'metro' },
@@ -44,7 +64,11 @@ export class Productos implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private productoService: ProductoService,
+    private categoriaService: CategoriaService,
+    private marcaService: MarcaService
   ) {}
 
   ngOnInit(): void {
@@ -58,11 +82,61 @@ export class Productos implements OnInit {
       marca_id: [null, Validators.required],
       imagen_url: ['', [Validators.pattern(/^https?:\/\/.+$/)]]
     });
+
+    this.cargarProductos();
+    this.cargarCategorias();
+    this.cargarMarcas();
+  }
+
+  cargarProductos() {
+    this.cargando.set(true);
+    this.huboError.set(false);
+
+    this.productoService.traerTodos().subscribe({
+      next: (lista) => this.productos.set(lista),
+      error: (error) => {
+        this.huboError.set(true);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) });
+      },
+      complete: () => this.cargando.set(false)
+    });
+  }
+
+  // Las listas de categorías y marcas alimentan los selects del formulario
+  cargarCategorias() {
+    this.categoriaService.traerTodas().subscribe({
+      next: (lista) => this.categorias.set(lista),
+      error: (error) => this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) })
+    });
+  }
+
+  cargarMarcas() {
+    this.marcaService.traerTodas().subscribe({
+      next: (lista) => this.marcas.set(lista),
+      error: (error) => this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) })
+    });
+  }
+
+  get opcionesCategoria() {
+    return this.categorias().map((c) => ({ label: c.nombre, value: c.id }));
+  }
+
+  get opcionesMarca() {
+    return this.marcas().map((m) => ({ label: m.nombre, value: m.id }));
+  }
+
+  get productosSeleccionables() {
+    return this.productos().map((p) => ({ label: p.nombre, value: p.id }));
+  }
+
+  get imagenPreview(): string {
+    return this.formulario.get('imagen_url')?.value ?? '';
   }
 
   abrirNueva() {
     this.editandoId = null;
     this.formulario.reset({ unidad_medida: 'unidad' });
+    this.imagenFallida.set(false);
     this.dialogVisible.set(true);
   }
 
@@ -78,15 +152,8 @@ export class Productos implements OnInit {
       marca_id: producto.marca_id,
       imagen_url: producto.imagen_url
     });
+    this.imagenFallida.set(false);
     this.dialogVisible.set(true);
-  }
-
-  get productosSeleccionables() {
-    return this.productos().map((p) => ({ label: p.nombre, value: p.id }));
-  }
-
-  get imagenPreview(): string {
-    return this.formulario.get('imagen_url')?.value ?? '';
   }
 
   guardar() {
@@ -94,7 +161,26 @@ export class Productos implements OnInit {
       this.formulario.markAllAsTouched();
       return;
     }
-    this.dialogVisible.set(false);
+
+    const datos = this.formulario.value;
+    this.guardando.set(true);
+
+    // Si hay un producto en edición, se actualiza; si no, se crea
+    const operacion = this.editandoId
+      ? this.productoService.actualizar(this.editandoId, datos)
+      : this.productoService.crear(datos);
+
+    operacion.subscribe({
+      next: (respuesta) => {
+        this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
+        this.dialogVisible.set(false);
+        this.cargarProductos();
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) });
+        this.guardando.set(false);
+      }
+    });
   }
 
   confirmarEliminar(event: Event, producto: Producto) {
@@ -107,16 +193,58 @@ export class Productos implements OnInit {
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        this.productos.update((lista) => lista.filter((p) => p.id !== producto.id));
+        this.productoService.eliminar(producto.id).subscribe({
+          next: (respuesta) => {
+            this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
+            this.cargarProductos();
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) });
+          }
+        });
       }
     });
   }
 
-  nombreCategoria(id: number): string {
-    return CATEGORIAS.find((c) => c.id === id)?.nombre ?? '—';
+  // Si una imagen no se puede cargar, mostramos el ícono de placeholder
+  marcarImagenFallida(id: number) {
+    this.imagenesFallidas.update((set) => new Set(set).add(id));
   }
 
-  nombreMarca(id: number): string {
-    return MARCAS.find((m) => m.id === id)?.nombre ?? '—';
+  imagenesFallidas = signal<Set<number>>(new Set());
+
+  // Aplica el porcentaje a los productos seleccionados (ej: +10% = 10)
+  aplicarPrecios() {
+    const ids = this.idsSeleccionados();
+    const valor = this.porcentaje();
+
+    if (ids.length === 0 || valor === null) {
+      this.messageService.add({ severity: 'warn', summary: 'Faltan datos', detail: 'Seleccioná productos y un porcentaje.' });
+      return;
+    }
+
+    this.aplicandoPrecios.set(true);
+    this.productoService.actualizarPreciosMasivo(ids, valor).subscribe({
+      next: (respuesta) => {
+        this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
+        this.preciosVisible.set(false);
+        this.idsSeleccionados.set([]);
+        this.porcentaje.set(null);
+        this.cargarProductos();
+      },
+      error: (error) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) });
+        this.aplicandoPrecios.set(false);
+      }
+    });
+  }
+
+  // El nombre viene anidado desde la API; si no, se busca en la lista cargada
+  nombreCategoria(producto: Producto): string {
+    return producto.categoria?.nombre ?? this.categorias().find((c) => c.id === producto.categoria_id)?.nombre ?? '—';
+  }
+
+  nombreMarca(producto: Producto): string {
+    return producto.marca?.nombre ?? this.marcas().find((m) => m.id === producto.marca_id)?.nombre ?? '—';
   }
 }

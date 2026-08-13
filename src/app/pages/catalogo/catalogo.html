@@ -40,9 +40,28 @@
     </div>
   </div>
 
-  <p class="text-sm text-slate-500 mb-4">{{ filtradas.length }} producto(s) encontrado(s)</p>
+  @if (huboError()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3 mb-4">
+      <p class="text-sm text-red-700 flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i> No se pudieron cargar los productos.
+      </p>
+      <p-button label="Reintentar" icon="pi pi-refresh" severity="danger" [text]="true" (onClick)="cargarDatos()"></p-button>
+    </div>
+  }
 
-  @if (filtradas.length > 0) {
+  @if (!huboError()) {
+    <p class="text-sm text-slate-500 mb-4">{{ filtradas.length }} producto(s) encontrado(s)</p>
+  }
+
+  @if (huboError()) {
+    <div></div>
+  } @else if (cargando()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <p-skeleton width="100%" height="320px" borderRadius="16px"></p-skeleton>
+      }
+    </div>
+  } @else if (filtradas.length > 0) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       @for (producto of filtradas; track producto.id) {
         <app-producto-card [producto]="producto"
