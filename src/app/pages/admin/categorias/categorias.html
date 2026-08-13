@@ -1,19 +1,28 @@
 <div class="space-y-4">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-900">Categorías</h1>
-      <p class="text-sm text-slate-500">Administrá la estructura de categorías y subcategorías de la tienda.</p>
+  <app-page-header
+    titulo="Categorías"
+    descripcion="Administrá la estructura de categorías y subcategorías de la tienda."
+    textoBoton="Nueva categoría"
+    (botonPresionado)="abrirNueva()"
+  ></app-page-header>
+
+  @if (huboError()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm text-red-700 flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i> No se pudieron cargar las categorías.
+      </p>
+      <p-button label="Reintentar" icon="pi pi-refresh" severity="danger" [text]="true" (onClick)="cargarCategorias()"></p-button>
     </div>
-    <p-button label="Nueva categoría" icon="pi pi-plus" (onClick)="abrirNueva()"></p-button>
-  </div>
+  }
 
   <p-card>
-    <p-table [value]="categorias()" [paginator]="true" [rows]="10" stripedRows>
+    <p-table [value]="categorias()" [paginator]="true" [rows]="10" stripedRows [loading]="cargando()">
       <ng-template pTemplate="header">
         <tr>
           <th>Nombre</th>
           <th>Categoría padre</th>
           <th>Subcategorías</th>
+          <th>Productos</th>
           <th style="width: 120px;">Acciones</th>
         </tr>
       </ng-template>
@@ -31,6 +40,9 @@
           </td>
           <td>
             <p-tag [value]="(categoria.subcategorias?.length ?? 0) + ' sub'"></p-tag>
+          </td>
+          <td>
+            <span class="font-semibold">{{ categoria.productos_count ?? 0 }}</span>
           </td>
           <td>
             <div class="flex gap-1">
@@ -63,7 +75,7 @@
 
       <div class="flex justify-end gap-2 pt-2">
         <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="dialogVisible.set(false)"></p-button>
-        <p-button label="Guardar" icon="pi pi-check" type="submit"></p-button>
+        <p-button label="Guardar" icon="pi pi-check" type="submit" [loading]="guardando()"></p-button>
       </div>
     </form>
   </p-dialog>

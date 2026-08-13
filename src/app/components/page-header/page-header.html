@@ -1,0 +1,29 @@
+<div class="flex flex-wrap items-start justify-between gap-4 mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-slate-800">{{ titulo() }}</h1>
+    @if (descripcion()) {
+      <p class="text-sm text-slate-500 mt-1">{{ descripcion() }}</p>
+    }
+  </div>
+
+  <div class="flex gap-2">
+    @if (textoBotonSecundario()) {
+      <p-button
+        [label]="textoBotonSecundario()"
+        [icon]="iconoBotonSecundario()"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="botonSecundarioPresionado.emit()"
+      ></p-button>
+    }
+
+    @if (textoBoton()) {
+      <p-button
+        [label]="textoBoton()"
+        [icon]="iconoBoton()"
+        [loading]="botonCargando()"
+        (onClick)="botonPresionado.emit()"
+      ></p-button>
+    }
+  </div>
+</div>
