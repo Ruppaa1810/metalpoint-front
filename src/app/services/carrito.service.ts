@@ -20,17 +20,27 @@ export class CarritoService {
     });
   }
 
-  agregar(producto: Producto): void {
+  // Agrega un producto (por default 1 unidad), sin superar el stock disponible
+  agregar(producto: Producto, cantidad = 1): void {
     this.items.update((lista) => {
       const existente = lista.find((item) => item.producto.id === producto.id);
+      const yaEnCarrito = existente?.cantidad ?? 0;
+
+      // El total en el carrito no puede pasar del stock
+      const nuevaCantidad = Math.min(yaEnCarrito + cantidad, producto.stock);
+      if (nuevaCantidad <= 0) {
+        return lista;
+      }
+
       if (existente) {
         return lista.map((item) =>
           item.producto.id === producto.id
-            ? { ...item, cantidad: item.cantidad + 1 }
+            ? { ...item, cantidad: nuevaCantidad }
             : item
         );
       }
-      return [...lista, { producto, cantidad: 1 }];
+
+      return [...lista, { producto, cantidad: nuevaCantidad }];
     });
   }
 

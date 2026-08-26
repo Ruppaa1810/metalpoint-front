@@ -9,6 +9,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SliderModule } from 'primeng/slider';
 import { SkeletonModule } from 'primeng/skeleton';
+import { MessageService } from 'primeng/api';
 
 import { ProductoCard } from '../../components/producto-card/producto-card';
 import { Producto } from '../../models/producto';
@@ -33,6 +34,7 @@ export class Catalogo implements OnInit {
   private productoService = inject(ProductoService);
   private categoriaService = inject(CategoriaService);
   private marcaService = inject(MarcaService);
+  private messageService = inject(MessageService);
 
   // Datos traídos desde la API
   productos = signal<Producto[]>([]);
@@ -48,6 +50,9 @@ export class Catalogo implements OnInit {
   ordenSeleccionado = signal<string | null>(null);
   precioMin = signal(0);
   precioMax = signal(50000);
+
+  // Tope máximo del rango, se calcula con el precio más alto de la lista
+  topePrecio = signal(50000);
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -67,6 +72,13 @@ export class Catalogo implements OnInit {
         this.productos.set(resultados.productos);
         this.categorias.set(resultados.categorias);
         this.marcas.set(resultados.marcas);
+
+        // El rango de precio arranca en el máximo disponible para no ocultar productos
+        const maximo = resultados.productos.length
+          ? Math.max(...resultados.productos.map((p) => p.precio))
+          : 50000;
+        this.topePrecio.set(maximo);
+        this.precioMax.set(maximo);
       },
       error: () => this.huboError.set(true),
       complete: () => this.cargando.set(false)
@@ -127,7 +139,7 @@ export class Catalogo implements OnInit {
     this.marcaSeleccionada.set(null);
     this.ordenSeleccionado.set(null);
     this.precioMin.set(0);
-    this.precioMax.set(50000);
+    this.precioMax.set(this.topePrecio());
   }
 
   enCarrito(producto: Producto): boolean {
@@ -139,7 +151,13 @@ export class Catalogo implements OnInit {
   }
 
   agregarAlCarrito(producto: Producto): void {
+    // Suma una unidad más (el servicio respeta el stock disponible)
     this.carrito.agregar(producto);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Agregado al carrito',
+      detail: `1× ${producto.nombre}`
+    });
   }
 
   quitarDelCarrito(producto: Producto): void {

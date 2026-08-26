@@ -29,4 +29,18 @@ export class ProductoCard {
   get precioFormateado(): string {
     return '$ ' + this.producto.precio.toLocaleString('es-AR');
   }
+
+  // Devuelve la unidad de medida bien escrita (con o sin plural)
+  get etiquetaUnidad(): string {
+    const plural = this.producto.stock > 1;
+    switch (this.producto.unidad_medida) {
+      case 'unidad':
+        return plural ? 'unidades' : 'unidad';
+      case 'metro':
+        return plural ? 'metros' : 'metro';
+      default:
+        // kg y m2 no cambian en plural
+        return this.producto.unidad_medida;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Categoria } from '../models/categoria';
+import { environment } from '../../environments/environment';
 
 // Forma de respuesta que devuelve Laravel al crear/actualizar/eliminar
 export interface RespuestaServidor {
@@ -14,7 +15,7 @@ export interface RespuestaServidor {
 @Injectable({ providedIn: 'root' })
 export class CategoriaService {
   private http = inject(HttpClient);
-  private urlBase = '/api/categorias';
+  private urlBase = `${environment.apiUrl}/categorias`;
 
   // Trae todas las categorías (incluye subcategorías y conteo de productos)
   traerTodas(): Observable<Categoria[]> {

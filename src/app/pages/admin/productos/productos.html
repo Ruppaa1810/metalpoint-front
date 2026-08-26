@@ -6,7 +6,7 @@
     (botonPresionado)="abrirNueva()"
     textoBotonSecundario="Actualizar precios"
     iconoBotonSecundario="pi pi-chart-line"
-    (botonSecundarioPresionado)="preciosVisible.set(true)"
+    (botonSecundarioPresionado)="abrirPrecios()"
   ></app-page-header>
 
   @if (huboError()) {
@@ -151,25 +151,30 @@
 
   <!-- Diálogo: actualización masiva de precios -->
   <p-dialog header="Actualizar precios" [modal]="true" [(visible)]="preciosVisible" [style]="{ width: '480px' }">
-    <div class="space-y-4 pt-2">
+    <form [formGroup]="formularioPrecios" (ngSubmit)="aplicarPrecios()" class="space-y-4 pt-2">
       <p class="text-sm text-slate-600">Seleccioná los productos y el porcentaje a aplicar. Por ejemplo: +10% = 10.</p>
 
       <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">Productos a actualizar</label>
-        <p-multiselect [options]="productosSeleccionables" optionLabel="label" optionValue="value"
-                       placeholder="Seleccioná productos..." class="w-full"
-                       [ngModel]="idsSeleccionados()" (ngModelChange)="idsSeleccionados.set($event)"></p-multiselect>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Productos a actualizar *</label>
+        <p-multiselect formControlName="ids" [options]="productosSeleccionables" optionLabel="label" optionValue="value"
+                       placeholder="Seleccioná productos..." class="w-full"></p-multiselect>
+        @if (formularioPrecios.get('ids')?.invalid && formularioPrecios.get('ids')?.touched) {
+          <small class="text-red-500">Seleccioná al menos un producto.</small>
+        }
       </div>
 
       <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">Porcentaje (%)</label>
-        <p-inputnumber [min]="-100" class="w-full" [ngModel]="porcentaje()" (ngModelChange)="porcentaje.set($event)" />
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Porcentaje (%) *</label>
+        <p-inputnumber formControlName="porcentaje" [min]="-100" [max]="100" class="w-full" />
+        @if (formularioPrecios.get('porcentaje')?.invalid && formularioPrecios.get('porcentaje')?.touched) {
+          <small class="text-red-500">El porcentaje es obligatorio y debe estar entre -100 y 100.</small>
+        }
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
         <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="preciosVisible.set(false)"></p-button>
-        <p-button label="Aplicar cambios" icon="pi pi-check" [loading]="aplicandoPrecios()" (onClick)="aplicarPrecios()"></p-button>
+        <p-button label="Aplicar cambios" icon="pi pi-check" type="submit" [loading]="aplicandoPrecios()"></p-button>
       </div>
-    </div>
+    </form>
   </p-dialog>
 </div>

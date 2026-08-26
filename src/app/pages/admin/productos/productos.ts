@@ -1,6 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -28,7 +27,7 @@ import { PageHeader } from '../../../components/page-header/page-header';
   imports: [
     TableModule, ButtonModule, CardModule, DialogModule, InputTextModule, InputNumberModule,
     TextareaModule, SelectModule, MultiSelectModule, TagModule, ConfirmDialogModule,
-    ReactiveFormsModule, FormsModule, PageHeader
+    ReactiveFormsModule, PageHeader
   ],
   providers: [ConfirmationService],
   templateUrl: './productos.html',
@@ -49,9 +48,8 @@ export class Productos implements OnInit {
 
   // Estado del diálogo de actualización masiva de precios
   preciosVisible = signal(false);
-  idsSeleccionados = signal<number[]>([]);
-  porcentaje = signal<number | null>(null);
   aplicandoPrecios = signal(false);
+  formularioPrecios!: FormGroup;
 
   formulario!: FormGroup;
 
@@ -81,6 +79,12 @@ export class Productos implements OnInit {
       categoria_id: [null, Validators.required],
       marca_id: [null, Validators.required],
       imagen_url: ['', [Validators.pattern(/^https?:\/\/.+$/)]]
+    });
+
+    // Formulario reactivo para la actualización masiva de precios
+    this.formularioPrecios = this.fb.group({
+      ids: [[], Validators.required],
+      porcentaje: [null, [Validators.required, Validators.min(-100), Validators.max(100)]]
     });
 
     this.cargarProductos();
@@ -213,23 +217,28 @@ export class Productos implements OnInit {
 
   imagenesFallidas = signal<Set<number>>(new Set());
 
+  // Abre el diálogo de precios con el formulario limpio
+  abrirPrecios() {
+    this.formularioPrecios.reset({ ids: [], porcentaje: null });
+    this.preciosVisible.set(true);
+  }
+
   // Aplica el porcentaje a los productos seleccionados (ej: +10% = 10)
   aplicarPrecios() {
-    const ids = this.idsSeleccionados();
-    const valor = this.porcentaje();
-
-    if (ids.length === 0 || valor === null) {
-      this.messageService.add({ severity: 'warn', summary: 'Faltan datos', detail: 'Seleccioná productos y un porcentaje.' });
+    if (this.formularioPrecios.invalid) {
+      this.formularioPrecios.markAllAsTouched();
       return;
     }
 
+    const ids = this.formularioPrecios.value.ids;
+    const porcentaje = this.formularioPrecios.value.porcentaje;
+
     this.aplicandoPrecios.set(true);
-    this.productoService.actualizarPreciosMasivo(ids, valor).subscribe({
+    this.productoService.actualizarPreciosMasivo(ids, porcentaje).subscribe({
       next: (respuesta) => {
         this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
         this.preciosVisible.set(false);
-        this.idsSeleccionados.set([]);
-        this.porcentaje.set(null);
+        this.formularioPrecios.reset({ ids: [], porcentaje: null });
         this.cargarProductos();
       },
       error: (error) => {

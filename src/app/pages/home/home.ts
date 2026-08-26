@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { SkeletonModule } from 'primeng/skeleton';
+import { MessageService } from 'primeng/api';
 
 import { Producto } from '../../models/producto';
 import { Categoria } from '../../models/categoria';
@@ -23,14 +24,15 @@ export class Home implements OnInit {
   private carrito = inject(CarritoService);
   private productoService = inject(ProductoService);
   private categoriaService = inject(CategoriaService);
+  private messageService = inject(MessageService);
 
   productos = signal<Producto[]>([]);
   categorias = signal<Categoria[]>([]);
   cargando = signal(true);
   huboError = signal(false);
 
-  // Los primeros 4 productos cargados son los "destacados"
-  destacados = computed(() => this.productos().slice(0, 4));
+  // Muestra los últimos 4 productos agregados al catálogo
+  destacados = computed(() => [...this.productos()].reverse().slice(0, 4));
   categoriasPrincipales = computed(() => this.categorias().filter((c) => c.categoria_padre_id === null));
 
   ngOnInit(): void {
@@ -63,7 +65,13 @@ export class Home implements OnInit {
   }
 
   agregarAlCarrito(producto: Producto): void {
+    // Suma una unidad más (el servicio respeta el stock disponible)
     this.carrito.agregar(producto);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Agregado al carrito',
+      detail: `1× ${producto.nombre}`
+    });
   }
 
   quitarDelCarrito(producto: Producto): void {

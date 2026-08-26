@@ -4,11 +4,12 @@ import { Observable } from 'rxjs';
 
 import { Marca } from '../models/marca';
 import { RespuestaServidor } from './categoria.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MarcaService {
   private http = inject(HttpClient);
-  private urlBase = '/api/marcas';
+  private urlBase = `${environment.apiUrl}/marcas`;
 
   // Trae todas las marcas (con el conteo de productos de cada una)
   traerTodas(): Observable<Marca[]> {

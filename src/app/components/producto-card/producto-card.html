@@ -12,7 +12,7 @@
   <div class="p-4 flex flex-col gap-2 flex-1">
     <div class="flex items-center justify-between gap-2">
       <span class="text-xs text-slate-500 uppercase tracking-wide">{{ producto.marca?.nombre }}</span>
-      <p-tag [value]="producto.unidad_medida + (producto.stock > 1 ? 's' : '')" severity="secondary" [rounded]="true"></p-tag>
+      <p-tag [value]="etiquetaUnidad" severity="secondary" [rounded]="true"></p-tag>
     </div>
 
     <a [routerLink]="['/producto', producto.id]" class="font-semibold text-slate-800 line-clamp-2 hover:text-amber-600">
@@ -24,9 +24,10 @@
       @if (!enCarrito) {
         <p-button label="Agregar" icon="pi pi-cart-plus" (onClick)="onAgregar()" [disabled]="producto.stock === 0"></p-button>
       } @else {
-        <div class="flex items-center gap-2">
-          <p-tag [value]="cantidadEnCarrito.toString()" severity="warn" [rounded]="true"></p-tag>
-          <p-button label="Quitar" icon="pi pi-minus" severity="danger" [text]="true" (onClick)="onQuitar()"></p-button>
+        <div class="flex items-center gap-1">
+          <p-button icon="pi pi-minus" severity="secondary" [text]="true" [rounded]="true" size="small" (onClick)="onQuitar()"></p-button>
+          <span class="w-8 text-center font-semibold text-slate-800">{{ cantidadEnCarrito }}</span>
+          <p-button icon="pi pi-plus" severity="secondary" [text]="true" [rounded]="true" size="small" (onClick)="onAgregar()" [disabled]="cantidadEnCarrito >= producto.stock"></p-button>
         </div>
       }
     </div>

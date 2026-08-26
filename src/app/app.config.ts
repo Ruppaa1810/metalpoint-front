@@ -19,6 +19,8 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: Aura,
         options: {
+          // Fuerza el tema claro siempre (evita que PrimeNG se ponga oscuro con el modo oscuro de Windows)
+          darkModeSelector: false,
           cssLayer: {
             name: 'primeng',
             order: 'theme, base, primeng'
