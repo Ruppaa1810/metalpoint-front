@@ -2,7 +2,7 @@
 nixPkgs = ["nodejs_20"]
 
 [phases.build]
-cmds = ["npm ci", "npm run build"]
+cmds = ["npm ci", "npm run build --configuration production"]
 
 [phases.run]
-cmd = "npx serve dist/metalpoint-front/browser -l 3000 -s"
+cmd = "npx serve dist/metalpoint-front/browser -l $PORT -s"
