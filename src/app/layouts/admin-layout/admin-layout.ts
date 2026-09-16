@@ -6,6 +6,5 @@ import { ToastModule } from 'primeng/toast';
   selector: 'app-admin-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, ToastModule],
   templateUrl: './admin-layout.html',
-  styleUrl: './admin-layout.css',
 })
 export class AdminLayout {}

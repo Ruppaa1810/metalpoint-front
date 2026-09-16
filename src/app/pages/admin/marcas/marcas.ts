@@ -21,7 +21,6 @@ import { PageHeader } from '../../../components/page-header/page-header';
   ],
   providers: [ConfirmationService],
   templateUrl: './marcas.html',
-  styleUrl: './marcas.css',
 })
 export class Marcas implements OnInit {
   marcas = signal<Marca[]>([]);
@@ -84,7 +83,6 @@ export class Marcas implements OnInit {
     const datos = this.formulario.value;
     this.guardando.set(true);
 
-    // Si hay una marca en edición, se actualiza; si no, se crea
     const operacion = this.editandoId
       ? this.marcaService.actualizar(this.editandoId, datos)
       : this.marcaService.crear(datos);
@@ -112,7 +110,6 @@ export class Marcas implements OnInit {
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        // Las marcas que tienen productos no se pueden borrar del servidor
         if ((marca.productos_count ?? 0) > 0) {
           this.messageService.add({
             severity: 'info',

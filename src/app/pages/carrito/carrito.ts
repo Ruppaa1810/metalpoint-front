@@ -9,7 +9,6 @@ import { CarritoService } from '../../services/carrito.service';
   selector: 'app-carrito',
   imports: [RouterLink, ButtonModule, TagModule, DividerModule],
   templateUrl: './carrito.html',
-  styleUrl: './carrito.css',
 })
 export class Carrito {
   private carrito = inject(CarritoService);

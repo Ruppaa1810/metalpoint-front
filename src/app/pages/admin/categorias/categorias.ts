@@ -23,15 +23,12 @@ import { PageHeader } from '../../../components/page-header/page-header';
   ],
   providers: [ConfirmationService],
   templateUrl: './categorias.html',
-  styleUrl: './categorias.css',
 })
 export class Categorias implements OnInit {
-  // Lista de categorías y estado de la carga
   categorias = signal<Categoria[]>([]);
   cargando = signal(false);
   huboError = signal(false);
 
-  // Estado del diálogo de alta/edición
   dialogVisible = signal(false);
   guardando = signal(false);
   editandoId: number | null = null;
@@ -68,7 +65,6 @@ export class Categorias implements OnInit {
     });
   }
 
-  // Solo las categorías principales pueden ser "padre" (y no ella misma al editar)
   get opcionesPadres() {
     return this.categorias()
       .filter((c) => c.categoria_padre_id === null && c.id !== this.editandoId)
@@ -99,7 +95,6 @@ export class Categorias implements OnInit {
     const datos = this.formulario.value;
     this.guardando.set(true);
 
-    // Si hay una categoría en edición, se actualiza; si no, se crea
     const operacion = this.editandoId
       ? this.categoriaService.actualizar(this.editandoId, datos)
       : this.categoriaService.crear(datos);
@@ -127,7 +122,6 @@ export class Categorias implements OnInit {
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        // No se puede borrar si tiene subcategorías o productos asociados
         const tieneSubcategorias = (categoria.subcategorias?.length ?? 0) > 0;
         const tieneProductos = (categoria.productos_count ?? 0) > 0;
 

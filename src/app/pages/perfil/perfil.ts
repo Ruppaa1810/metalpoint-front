@@ -7,7 +7,6 @@ import { DividerModule } from 'primeng/divider';
   selector: 'app-perfil',
   imports: [ButtonModule, TagModule, DividerModule],
   templateUrl: './perfil.html',
-  styleUrl: './perfil.css',
 })
 export class Perfil {
   usuario = {

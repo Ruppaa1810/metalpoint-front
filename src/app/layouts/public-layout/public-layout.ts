@@ -12,7 +12,6 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-public-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, BadgeModule, ButtonModule, MenuModule, ToastModule],
   templateUrl: './public-layout.html',
-  styleUrl: './public-layout.css',
 })
 export class PublicLayout {
   private carrito = inject(CarritoService);

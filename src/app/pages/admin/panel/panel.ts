@@ -21,7 +21,6 @@ import { PageHeader } from '../../../components/page-header/page-header';
   selector: 'app-panel',
   imports: [RouterLink, CardModule, ButtonModule, TableModule, TagModule, SkeletonModule, PageHeader],
   templateUrl: './panel.html',
-  styleUrl: './panel.css',
 })
 export class Panel implements OnInit {
   cargando = signal(true);
@@ -31,13 +30,11 @@ export class Panel implements OnInit {
   categorias = signal<Categoria[]>([]);
   marcas = signal<Marca[]>([]);
 
-  // Estadísticas calculadas a partir de los datos cargados
   totalProductos = computed(() => this.productos().length);
   totalCategorias = computed(() => this.categorias().length);
   totalMarcas = computed(() => this.marcas().length);
   stockTotal = computed(() => this.productos().reduce((acc, p) => acc + p.stock, 0));
 
-  // Muestra los últimos productos cargados (los de más abajo de la lista)
   ultimosProductos = computed(() => [...this.productos()].reverse().slice(0, 5));
 
   constructor(
@@ -55,7 +52,6 @@ export class Panel implements OnInit {
     this.cargando.set(true);
     this.huboError.set(false);
 
-    // Las tres consultas se hacen en paralelo y esperamos que terminen todas
     forkJoin({
       productos: this.productoService.traerTodos(),
       categorias: this.categoriaService.traerTodas(),
