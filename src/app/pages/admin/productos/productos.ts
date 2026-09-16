@@ -1,6 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -28,11 +27,10 @@ import { PageHeader } from '../../../components/page-header/page-header';
   imports: [
     TableModule, ButtonModule, CardModule, DialogModule, InputTextModule, InputNumberModule,
     TextareaModule, SelectModule, MultiSelectModule, TagModule, ConfirmDialogModule,
-    ReactiveFormsModule, FormsModule, PageHeader
+    ReactiveFormsModule, PageHeader
   ],
   providers: [ConfirmationService],
   templateUrl: './productos.html',
-  styleUrl: './productos.css',
 })
 export class Productos implements OnInit {
   productos = signal<Producto[]>([]);
@@ -41,17 +39,14 @@ export class Productos implements OnInit {
   cargando = signal(false);
   huboError = signal(false);
 
-  // Estado del diálogo de alta/edición
   dialogVisible = signal(false);
   guardando = signal(false);
   editandoId: number | null = null;
   imagenFallida = signal(false);
 
-  // Estado del diálogo de actualización masiva de precios
   preciosVisible = signal(false);
-  idsSeleccionados = signal<number[]>([]);
-  porcentaje = signal<number | null>(null);
   aplicandoPrecios = signal(false);
+  formularioPrecios!: FormGroup;
 
   formulario!: FormGroup;
 
@@ -83,6 +78,11 @@ export class Productos implements OnInit {
       imagen_url: ['', [Validators.pattern(/^https?:\/\/.+$/)]]
     });
 
+    this.formularioPrecios = this.fb.group({
+      ids: [[], Validators.required],
+      porcentaje: [null, [Validators.required, Validators.min(-100), Validators.max(100)]]
+    });
+
     this.cargarProductos();
     this.cargarCategorias();
     this.cargarMarcas();
@@ -102,7 +102,6 @@ export class Productos implements OnInit {
     });
   }
 
-  // Las listas de categorías y marcas alimentan los selects del formulario
   cargarCategorias() {
     this.categoriaService.traerTodas().subscribe({
       next: (lista) => this.categorias.set(lista),
@@ -165,7 +164,6 @@ export class Productos implements OnInit {
     const datos = this.formulario.value;
     this.guardando.set(true);
 
-    // Si hay un producto en edición, se actualiza; si no, se crea
     const operacion = this.editandoId
       ? this.productoService.actualizar(this.editandoId, datos)
       : this.productoService.crear(datos);
@@ -206,30 +204,32 @@ export class Productos implements OnInit {
     });
   }
 
-  // Si una imagen no se puede cargar, mostramos el ícono de placeholder
   marcarImagenFallida(id: number) {
     this.imagenesFallidas.update((set) => new Set(set).add(id));
   }
 
   imagenesFallidas = signal<Set<number>>(new Set());
 
-  // Aplica el porcentaje a los productos seleccionados (ej: +10% = 10)
-  aplicarPrecios() {
-    const ids = this.idsSeleccionados();
-    const valor = this.porcentaje();
+  abrirPrecios() {
+    this.formularioPrecios.reset({ ids: [], porcentaje: null });
+    this.preciosVisible.set(true);
+  }
 
-    if (ids.length === 0 || valor === null) {
-      this.messageService.add({ severity: 'warn', summary: 'Faltan datos', detail: 'Seleccioná productos y un porcentaje.' });
+  aplicarPrecios() {
+    if (this.formularioPrecios.invalid) {
+      this.formularioPrecios.markAllAsTouched();
       return;
     }
 
+    const ids = this.formularioPrecios.value.ids;
+    const porcentaje = this.formularioPrecios.value.porcentaje;
+
     this.aplicandoPrecios.set(true);
-    this.productoService.actualizarPreciosMasivo(ids, valor).subscribe({
+    this.productoService.actualizarPreciosMasivo(ids, porcentaje).subscribe({
       next: (respuesta) => {
         this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
         this.preciosVisible.set(false);
-        this.idsSeleccionados.set([]);
-        this.porcentaje.set(null);
+        this.formularioPrecios.reset({ ids: [], porcentaje: null });
         this.cargarProductos();
       },
       error: (error) => {
@@ -239,7 +239,6 @@ export class Productos implements OnInit {
     });
   }
 
-  // El nombre viene anidado desde la API; si no, se busca en la lista cargada
   nombreCategoria(producto: Producto): string {
     return producto.categoria?.nombre ?? this.categorias().find((c) => c.id === producto.categoria_id)?.nombre ?? '—';
   }

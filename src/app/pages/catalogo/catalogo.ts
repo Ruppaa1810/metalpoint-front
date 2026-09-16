@@ -9,6 +9,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SliderModule } from 'primeng/slider';
 import { SkeletonModule } from 'primeng/skeleton';
+import { MessageService } from 'primeng/api';
 
 import { ProductoCard } from '../../components/producto-card/producto-card';
 import { Producto } from '../../models/producto';
@@ -26,28 +27,28 @@ import { CarritoService } from '../../services/carrito.service';
     CheckboxModule, SliderModule, SkeletonModule, ProductoCard
   ],
   templateUrl: './catalogo.html',
-  styleUrl: './catalogo.css',
 })
 export class Catalogo implements OnInit {
   private carrito = inject(CarritoService);
   private productoService = inject(ProductoService);
   private categoriaService = inject(CategoriaService);
   private marcaService = inject(MarcaService);
+  private messageService = inject(MessageService);
 
-  // Datos traídos desde la API
   productos = signal<Producto[]>([]);
   categorias = signal<Categoria[]>([]);
   marcas = signal<Marca[]>([]);
   cargando = signal(true);
   huboError = signal(false);
 
-  // Filtros elegidos por el usuario
   busqueda = signal('');
   categoriaSeleccionada = signal<number | null>(null);
   marcaSeleccionada = signal<number | null>(null);
   ordenSeleccionado = signal<string | null>(null);
   precioMin = signal(0);
   precioMax = signal(50000);
+
+  topePrecio = signal(50000);
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -57,7 +58,6 @@ export class Catalogo implements OnInit {
     this.cargando.set(true);
     this.huboError.set(false);
 
-    // Las tres consultas se hacen en paralelo
     forkJoin({
       productos: this.productoService.traerTodos(),
       categorias: this.categoriaService.traerTodas(),
@@ -67,13 +67,18 @@ export class Catalogo implements OnInit {
         this.productos.set(resultados.productos);
         this.categorias.set(resultados.categorias);
         this.marcas.set(resultados.marcas);
+
+        const maximo = resultados.productos.length
+          ? Math.max(...resultados.productos.map((p) => p.precio))
+          : 50000;
+        this.topePrecio.set(maximo);
+        this.precioMax.set(maximo);
       },
       error: () => this.huboError.set(true),
       complete: () => this.cargando.set(false)
     });
   }
 
-  // Aplica todos los filtros a la lista de productos
   get filtradas() {
     let lista = this.productos();
 
@@ -83,7 +88,6 @@ export class Catalogo implements OnInit {
     }
 
     if (this.categoriaSeleccionada()) {
-      // Si la categoría elegida tiene subcategorías, también se muestran sus productos
       const hijoIds = this.categorias()
         .filter((c) => c.categoria_padre_id === this.categoriaSeleccionada())
         .map((c) => c.id);
@@ -127,7 +131,7 @@ export class Catalogo implements OnInit {
     this.marcaSeleccionada.set(null);
     this.ordenSeleccionado.set(null);
     this.precioMin.set(0);
-    this.precioMax.set(50000);
+    this.precioMax.set(this.topePrecio());
   }
 
   enCarrito(producto: Producto): boolean {
@@ -140,6 +144,11 @@ export class Catalogo implements OnInit {
 
   agregarAlCarrito(producto: Producto): void {
     this.carrito.agregar(producto);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Agregado al carrito',
+      detail: `1× ${producto.nombre}`
+    });
   }
 
   quitarDelCarrito(producto: Producto): void {

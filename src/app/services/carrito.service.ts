@@ -2,11 +2,11 @@ import { Injectable, computed, effect, signal } from '@angular/core';
 import { Producto } from '../models/producto';
 import { CarritoItem } from '../models/carrito';
 
-const STORAGE_KEY = 'metalpoint_carrito';
+const CLAVE_STORAGE = 'metalpoint_carrito';
 
 @Injectable({ providedIn: 'root' })
 export class CarritoService {
-  readonly items = signal<CarritoItem[]>(this.cargarDelStorage());
+  readonly items = signal<CarritoItem[]>(this.cargar());
 
   totalItems = computed(() => this.items().reduce((acc, item) => acc + item.cantidad, 0));
 
@@ -16,21 +16,29 @@ export class CarritoService {
 
   constructor() {
     effect(() => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.items()));
+      localStorage.setItem(CLAVE_STORAGE, JSON.stringify(this.items()));
     });
   }
 
-  agregar(producto: Producto): void {
+  agregar(producto: Producto, cantidad = 1): void {
     this.items.update((lista) => {
       const existente = lista.find((item) => item.producto.id === producto.id);
+      const yaEnCarrito = existente?.cantidad ?? 0;
+      const nuevaCantidad = Math.min(yaEnCarrito + cantidad, producto.stock);
+
+      if (nuevaCantidad <= 0) {
+        return lista;
+      }
+
       if (existente) {
         return lista.map((item) =>
           item.producto.id === producto.id
-            ? { ...item, cantidad: item.cantidad + 1 }
+            ? { ...item, cantidad: nuevaCantidad }
             : item
         );
       }
-      return [...lista, { producto, cantidad: 1 }];
+
+      return [...lista, { producto, cantidad: nuevaCantidad }];
     });
   }
 
@@ -62,9 +70,9 @@ export class CarritoService {
     return this.cantidadDe(productoId) > 0;
   }
 
-  private cargarDelStorage(): CarritoItem[] {
+  private cargar(): CarritoItem[] {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(CLAVE_STORAGE);
       return raw ? (JSON.parse(raw) as CarritoItem[]) : [];
     } catch {
       return [];

@@ -30,8 +30,8 @@
         <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">
           Precio: $ {{ precioMin().toLocaleString('es-AR') }} – $ {{ precioMax().toLocaleString('es-AR') }}
         </label>
-        <p-slider [(ngModel)]="precioMin" [min]="0" [max]="50000" class="w-full mb-3"/>
-        <p-slider [(ngModel)]="precioMax" [min]="0" [max]="50000" class="w-full"/>
+        <p-slider [(ngModel)]="precioMin" [min]="0" [max]="topePrecio()" class="w-full mb-3"/>
+        <p-slider [(ngModel)]="precioMax" [min]="0" [max]="topePrecio()" class="w-full"/>
       </div>
 
       <div class="flex items-center gap-2">

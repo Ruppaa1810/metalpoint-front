@@ -8,7 +8,6 @@ import { Producto } from '../../models/producto';
   selector: 'app-producto-card',
   imports: [RouterLink, ButtonModule, TagModule],
   templateUrl: './producto-card.html',
-  styleUrl: './producto-card.css',
 })
 export class ProductoCard {
   @Input({ required: true }) producto!: Producto;
@@ -28,5 +27,17 @@ export class ProductoCard {
 
   get precioFormateado(): string {
     return '$ ' + this.producto.precio.toLocaleString('es-AR');
+  }
+
+  get etiquetaUnidad(): string {
+    const plural = this.producto.stock > 1;
+    switch (this.producto.unidad_medida) {
+      case 'unidad':
+        return plural ? 'unidades' : 'unidad';
+      case 'metro':
+        return plural ? 'metros' : 'metro';
+      default:
+        return this.producto.unidad_medida;
+    }
   }
 }
