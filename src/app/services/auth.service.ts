@@ -26,9 +26,10 @@ export class AuthService {
   private readonly CLAVE_TOKEN = 'metalpoint_token';
   private readonly CLAVE_USUARIO = 'metalpoint_usuario';
 
-  usuario = signal<Usuario | null>(this.cargarUsuario());
-  estaLogueado = signal<boolean>(this.tieneToken());
-  esAdmin = signal<boolean>(this.usuario()?.role === 'admin');
+  usuario = signal<Usuario | null>(null);
+  estaLogueado = signal<boolean>(false);
+  esAdmin = signal<boolean>(false);
+  sesionVerificada = signal<boolean>(false);
 
   login(email: string, password: string): Observable<AuthRespuesta> {
     return this.http.post<AuthRespuesta>(`${this.urlBase}/login`, { email, password }).pipe(
@@ -60,17 +61,22 @@ export class AuthService {
 
   cargarUsuarioActual(): void {
     const token = this.obtenerToken();
-    if (!token) return;
+    if (!token) {
+      this.sesionVerificada.set(true);
+      return;
+    }
 
     this.http.get<{ success: boolean; data: Usuario }>(`${this.urlBase}/user`).subscribe({
       next: (respuesta) => {
         this.usuario.set(respuesta.data);
         this.estaLogueado.set(true);
         this.esAdmin.set(respuesta.data.role === 'admin');
+        this.sesionVerificada.set(true);
         localStorage.setItem(this.CLAVE_USUARIO, JSON.stringify(respuesta.data));
       },
       error: () => {
         this.logout();
+        this.sesionVerificada.set(true);
       },
     });
   }
