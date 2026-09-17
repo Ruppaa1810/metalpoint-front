@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-perfil',
@@ -9,9 +10,7 @@ import { DividerModule } from 'primeng/divider';
   templateUrl: './perfil.html',
 })
 export class Perfil {
-  usuario = {
-    nombre: 'Santiago Rupani',
-    email: 'santiagorupani1810@gmail.com',
-    rol: 'Administrador'
-  };
+  private auth = inject(AuthService);
+
+  usuario = this.auth.usuario;
 }

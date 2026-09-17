@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -9,12 +10,15 @@ export const routes: Routes = [
       { path: 'catalogo', loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo) },
       { path: 'producto/:id', loadComponent: () => import('./pages/producto-detalle/producto-detalle').then((m) => m.ProductoDetalle) },
       { path: 'carrito', loadComponent: () => import('./pages/carrito/carrito').then((m) => m.Carrito) },
-      { path: 'perfil', loadComponent: () => import('./pages/perfil/perfil').then((m) => m.Perfil) }
+      { path: 'perfil', loadComponent: () => import('./pages/perfil/perfil').then((m) => m.Perfil) },
+      { path: 'login', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
+      { path: 'registro', loadComponent: () => import('./pages/registro/registro').then((m) => m.Registro) },
     ]
   },
   {
     path: 'admin',
     loadComponent: () => import('./layouts/admin-layout/admin-layout').then((m) => m.AdminLayout),
+    canActivate: [adminGuard],
     children: [
       { path: '', loadComponent: () => import('./pages/admin/panel/panel').then((m) => m.Panel) },
       { path: 'categorias', loadComponent: () => import('./pages/admin/categorias/categorias').then((m) => m.Categorias) },

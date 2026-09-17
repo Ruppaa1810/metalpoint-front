@@ -9,11 +9,13 @@
 
       <div class="flex items-center gap-4">
         <nav class="hidden md:flex items-center gap-1">
-          <a routerLink="/" routerLinkActive="bg-slate-800" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">Inicio</a>
+          <a routerLink="/" routerLinkActive="bg-slate-800" [routerLinkActiveOptions]="{exact: true}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">Inicio</a>
           <a routerLink="/catalogo" routerLinkActive="bg-slate-800" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">Catálogo</a>
-          <a routerLink="/admin" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
-            <i class="pi pi-wrench mr-1"></i>Panel Admin
-          </a>
+          @if (esAdmin()) {
+            <a routerLink="/admin" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
+              <i class="pi pi-wrench mr-1"></i>Panel Admin
+            </a>
+          }
         </nav>
 
         <a routerLink="/carrito" class="relative p-2 rounded-md hover:bg-slate-800 transition-colors" title="Carrito">
@@ -21,15 +23,14 @@
           <p-badge [value]="totalCarrito()" severity="danger" class="absolute -top-1 -right-1"></p-badge>
         </a>
 
-        @if (usuario()) {
+        @if (estaLogueado()) {
           <div class="flex items-center gap-2">
-            @if (usuario() === 'invitado') {
-              <span class="text-xs bg-amber-400/20 text-amber-300 px-2 py-1 rounded-full font-semibold">Acceso Limitado</span>
-            }
             <p-button [label]="nombreUsuario()" icon="pi pi-user" severity="secondary" [text]="true" (onClick)="menu.toggle($event)"></p-button>
           </div>
         } @else {
-          <p-button label="Iniciar Sesión" icon="pi pi-user" (onClick)="menu.toggle($event)"></p-button>
+          <a routerLink="/login">
+            <p-button label="Iniciar Sesión" icon="pi pi-user"></p-button>
+          </a>
         }
 
         <p-menu #menu [model]="menuItems()" [popup]="true"></p-menu>
