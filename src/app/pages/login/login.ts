@@ -42,7 +42,7 @@ export class Login {
         this.messageService.add({
           severity: 'success',
           summary: 'Bienvenido',
-          detail: `Hola, ${respuesta.usuario.name}`,
+          detail: `Hola, ${respuesta.data.usuario.name}`,
         });
         setTimeout(() => this.router.navigate(['/']), 1000);
       },
