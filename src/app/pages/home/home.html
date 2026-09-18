@@ -16,9 +16,11 @@
       <a routerLink="/catalogo">
         <p-button label="Ver catálogo" icon="pi pi-th-large" [raised]="true"></p-button>
       </a>
-      <a routerLink="/admin">
-        <p-button label="Panel de administración" icon="pi pi-wrench" severity="secondary" [outlined]="true"></p-button>
-      </a>
+      @if (esAdmin()) {
+        <a routerLink="/admin">
+          <p-button label="Panel de administración" icon="pi pi-wrench" severity="secondary" [outlined]="true"></p-button>
+        </a>
+      }
     </div>
   </div>
 </section>

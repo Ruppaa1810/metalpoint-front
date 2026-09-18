@@ -13,6 +13,7 @@ import { ProductoService } from '../../services/producto.service';
 import { CategoriaService } from '../../services/categoria.service';
 import { ProductoCard } from '../../components/producto-card/producto-card';
 import { CarritoService } from '../../services/carrito.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,9 @@ export class Home implements OnInit {
   private productoService = inject(ProductoService);
   private categoriaService = inject(CategoriaService);
   private messageService = inject(MessageService);
+  private auth = inject(AuthService);
+
+  esAdmin = this.auth.esAdmin;
 
   productos = signal<Producto[]>([]);
   categorias = signal<Categoria[]>([]);
