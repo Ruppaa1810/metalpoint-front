@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Producto } from '../models/producto';
+import { FiltrosProducto, Producto } from '../models/producto';
 import { RespuestaServidor } from '../models/respuesta-servidor';
 import { environment } from '../../environments/environment';
 
@@ -11,8 +11,14 @@ export class ProductoService {
   private http = inject(HttpClient);
   private urlBase = `${environment.apiUrl}/productos`;
 
-  traerTodos(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(this.urlBase);
+  traerTodos(filtros: FiltrosProducto = {}): Observable<Producto[]> {
+    let params = new HttpParams();
+    for (const [clave, valor] of Object.entries(filtros)) {
+      if (valor !== null && valor !== undefined && valor !== '') {
+        params = params.set(clave, String(valor));
+      }
+    }
+    return this.http.get<Producto[]>(this.urlBase, { params });
   }
 
   traerUno(id: number): Observable<Producto> {

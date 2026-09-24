@@ -16,3 +16,12 @@ export interface Producto {
   categoria?: Categoria;
   marca?: Marca;
 }
+
+export interface FiltrosProducto {
+  q?: string;
+  categoria_id?: number | null;
+  marca_id?: number | null;
+  precio_min?: number | null;
+  precio_max?: number | null;
+  orden?: string | null;
+}
