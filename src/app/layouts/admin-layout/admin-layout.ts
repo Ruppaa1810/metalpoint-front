@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../services/auth.service';
@@ -10,6 +10,8 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AdminLayout implements OnInit {
   private auth = inject(AuthService);
+
+  menuAbierto = signal(false);
 
   ngOnInit(): void {
     this.auth.cargarUsuarioActual();

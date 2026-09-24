@@ -1,12 +1,16 @@
 <div class="min-h-screen flex bg-slate-100">
   <p-toast position="top-right" />
-  <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+  @if (menuAbierto()) {
+    <div class="fixed inset-0 bg-slate-900/40 z-30 md:hidden" (click)="menuAbierto.set(false)"></div>
+  }
+  <aside class="w-64 bg-white border-r border-slate-200 flex-col shrink-0 fixed inset-y-0 left-0 z-40 md:static md:flex"
+         [class.hidden]="!menuAbierto()" [class.flex]="menuAbierto()">
     <div class="flex items-center gap-2 px-5 h-16 border-b border-slate-200">
       <i class="pi pi-wrench text-amber-500 text-xl"></i>
       <span class="text-lg font-bold text-slate-900">Metal<span class="text-amber-500">Point</span></span>
     </div>
 
-    <nav class="flex-1 py-4 space-y-1">
+    <nav class="flex-1 py-4 space-y-1" (click)="menuAbierto.set(false)">
       <span class="px-5 py-2 text-xs uppercase tracking-wider text-slate-400">Administración</span>
 
       <a routerLink="/admin" routerLinkActive="bg-amber-50 text-amber-600 border-l-4 border-amber-500"
@@ -48,14 +52,19 @@
   </aside>
 
   <div class="flex-1 flex flex-col min-w-0">
-    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
-      <h1 class="font-semibold text-slate-700">Panel Administrativo</h1>
-      <a routerLink="/" class="text-sm text-slate-500 hover:text-slate-800 flex items-center gap-1">
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-3 px-4 md:px-6">
+      <div class="flex items-center gap-2 min-w-0">
+        <button type="button" class="md:hidden p-2 -ml-2 rounded-md text-slate-600 hover:bg-slate-100" (click)="menuAbierto.set(true)" aria-label="Abrir menú">
+          <i class="pi pi-bars"></i>
+        </button>
+        <h1 class="font-semibold text-slate-700 truncate">Panel Administrativo</h1>
+      </div>
+      <a routerLink="/" class="text-sm text-slate-500 hover:text-slate-800 flex items-center gap-1 shrink-0">
         <i class="pi pi-external-link"></i> Ver tienda
       </a>
     </header>
 
-    <main class="flex-1 p-6 overflow-auto">
+    <main class="flex-1 p-4 md:p-6 overflow-auto">
       <router-outlet />
     </main>
   </div>
