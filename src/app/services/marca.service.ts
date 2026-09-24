@@ -10,20 +10,21 @@ import { environment } from '../../environments/environment';
 export class MarcaService {
   private http = inject(HttpClient);
   private urlBase = `${environment.apiUrl}/marcas`;
+  private urlAdmin = `${environment.apiUrl}/admin/marcas`;
 
   traerTodas(): Observable<Marca[]> {
     return this.http.get<Marca[]>(this.urlBase);
   }
 
   crear(datos: Partial<Marca>): Observable<RespuestaServidor> {
-    return this.http.post<RespuestaServidor>(this.urlBase, datos);
+    return this.http.post<RespuestaServidor>(this.urlAdmin, datos);
   }
 
   actualizar(id: number, datos: Partial<Marca>): Observable<RespuestaServidor> {
-    return this.http.put<RespuestaServidor>(`${this.urlBase}/${id}`, datos);
+    return this.http.put<RespuestaServidor>(`${this.urlAdmin}/${id}`, datos);
   }
 
   eliminar(id: number): Observable<RespuestaServidor> {
-    return this.http.delete<RespuestaServidor>(`${this.urlBase}/${id}`);
+    return this.http.delete<RespuestaServidor>(`${this.urlAdmin}/${id}`);
   }
 }

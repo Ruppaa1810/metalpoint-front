@@ -10,6 +10,7 @@ import { environment } from '../../environments/environment';
 export class ProductoService {
   private http = inject(HttpClient);
   private urlBase = `${environment.apiUrl}/productos`;
+  private urlAdmin = `${environment.apiUrl}/admin/productos`;
 
   traerTodos(filtros: FiltrosProducto = {}): Observable<Producto[]> {
     let params = new HttpParams();
@@ -26,19 +27,19 @@ export class ProductoService {
   }
 
   crear(datos: Partial<Producto>): Observable<RespuestaServidor> {
-    return this.http.post<RespuestaServidor>(this.urlBase, datos);
+    return this.http.post<RespuestaServidor>(this.urlAdmin, datos);
   }
 
   actualizar(id: number, datos: Partial<Producto>): Observable<RespuestaServidor> {
-    return this.http.put<RespuestaServidor>(`${this.urlBase}/${id}`, datos);
+    return this.http.put<RespuestaServidor>(`${this.urlAdmin}/${id}`, datos);
   }
 
   eliminar(id: number): Observable<RespuestaServidor> {
-    return this.http.delete<RespuestaServidor>(`${this.urlBase}/${id}`);
+    return this.http.delete<RespuestaServidor>(`${this.urlAdmin}/${id}`);
   }
 
   actualizarPreciosMasivo(ids: number[], porcentaje: number): Observable<RespuestaServidor> {
-    return this.http.post<RespuestaServidor>(`${this.urlBase}/actualizar-precios`, {
+    return this.http.post<RespuestaServidor>(`${this.urlAdmin}/actualizar-precios`, {
       ids,
       porcentaje
     });

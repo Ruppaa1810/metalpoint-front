@@ -10,20 +10,21 @@ import { environment } from '../../environments/environment';
 export class CategoriaService {
   private http = inject(HttpClient);
   private urlBase = `${environment.apiUrl}/categorias`;
+  private urlAdmin = `${environment.apiUrl}/admin/categorias`;
 
   traerTodas(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(this.urlBase);
   }
 
   crear(datos: Partial<Categoria>): Observable<RespuestaServidor> {
-    return this.http.post<RespuestaServidor>(this.urlBase, datos);
+    return this.http.post<RespuestaServidor>(this.urlAdmin, datos);
   }
 
   actualizar(id: number, datos: Partial<Categoria>): Observable<RespuestaServidor> {
-    return this.http.put<RespuestaServidor>(`${this.urlBase}/${id}`, datos);
+    return this.http.put<RespuestaServidor>(`${this.urlAdmin}/${id}`, datos);
   }
 
   eliminar(id: number): Observable<RespuestaServidor> {
-    return this.http.delete<RespuestaServidor>(`${this.urlBase}/${id}`);
+    return this.http.delete<RespuestaServidor>(`${this.urlAdmin}/${id}`);
   }
 }
