@@ -7,12 +7,14 @@
         <span>Metal<span class="text-amber-400">Point</span></span>
       </a>
 
-      <div class="flex items-center gap-4">
-        <nav class="hidden md:flex items-center gap-1">
-          <a routerLink="/" routerLinkActive="bg-slate-800" [routerLinkActiveOptions]="{exact: true}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">Inicio</a>
-          <a routerLink="/catalogo" routerLinkActive="bg-slate-800" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">Catálogo</a>
+      <div class="flex items-center gap-2 sm:gap-4">
+        <nav class="flex items-center gap-1">
+          <a routerLink="/" routerLinkActive="bg-slate-800" [routerLinkActiveOptions]="{exact: true}" class="hidden sm:block px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">Inicio</a>
+          <a routerLink="/catalogo" routerLinkActive="bg-slate-800" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
+            <span class="sm:hidden" aria-hidden="true"><i class="pi pi-th-large"></i></span><span class="sr-only sm:not-sr-only">Catálogo</span>
+          </a>
           @if (esAdmin()) {
-            <a routerLink="/admin" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
+            <a routerLink="/admin" class="hidden md:block px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
               <i class="pi pi-wrench mr-1"></i>Panel Admin
             </a>
           }
@@ -20,7 +22,9 @@
 
         <a routerLink="/carrito" class="relative p-2 rounded-md hover:bg-slate-800 transition-colors" title="Carrito">
           <i class="pi pi-shopping-cart text-lg"></i>
-          <p-badge [value]="totalCarrito()" severity="danger" class="absolute -top-1 -right-1"></p-badge>
+          @if (totalCarrito() > 0) {
+            <p-badge [value]="totalCarrito()" severity="danger" class="absolute -top-1 -right-1"></p-badge>
+          }
         </a>
 
         @if (estaLogueado()) {
@@ -29,7 +33,7 @@
           </div>
         } @else {
           <a routerLink="/login">
-            <p-button label="Iniciar Sesión" icon="pi pi-user"></p-button>
+            <p-button label="Ingresar" icon="pi pi-user"></p-button>
           </a>
         }
 
