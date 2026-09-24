@@ -5,13 +5,13 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./layouts/public-layout/public-layout').then((m) => m.PublicLayout),
     children: [
-      { path: '', loadComponent: () => import('./pages/home/home').then((m) => m.Home) },
-      { path: 'catalogo', loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo) },
+      { path: '', title: 'MetalPoint - Hierros y Metalúrgica', loadComponent: () => import('./pages/home/home').then((m) => m.Home) },
+      { path: 'catalogo', title: 'Catálogo | MetalPoint', loadComponent: () => import('./pages/catalogo/catalogo').then((m) => m.Catalogo) },
       { path: 'producto/:id', loadComponent: () => import('./pages/producto-detalle/producto-detalle').then((m) => m.ProductoDetalle) },
-      { path: 'carrito', loadComponent: () => import('./pages/carrito/carrito').then((m) => m.Carrito) },
-      { path: 'perfil', loadComponent: () => import('./pages/perfil/perfil').then((m) => m.Perfil) },
-      { path: 'login', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
-      { path: 'registro', loadComponent: () => import('./pages/registro/registro').then((m) => m.Registro) },
+      { path: 'carrito', title: 'Carrito | MetalPoint', loadComponent: () => import('./pages/carrito/carrito').then((m) => m.Carrito) },
+      { path: 'perfil', title: 'Mi perfil | MetalPoint', loadComponent: () => import('./pages/perfil/perfil').then((m) => m.Perfil) },
+      { path: 'login', title: 'Iniciar sesión | MetalPoint', loadComponent: () => import('./pages/login/login').then((m) => m.Login) },
+      { path: 'registro', title: 'Crear cuenta | MetalPoint', loadComponent: () => import('./pages/registro/registro').then((m) => m.Registro) },
     ]
   },
   {
