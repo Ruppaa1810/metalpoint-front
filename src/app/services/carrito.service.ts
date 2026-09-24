@@ -62,6 +62,28 @@ export class CarritoService {
     this.items.set([]);
   }
 
+  sincronizar(productosActuales: Producto[]): string[] {
+    const cambios: string[] = [];
+    this.items.update((lista) =>
+      lista.flatMap((item) => {
+        const actual = productosActuales.find((p) => p.id === item.producto.id);
+        if (!actual || actual.stock <= 0) {
+          cambios.push(`${item.producto.nombre} ya no está disponible`);
+          return [];
+        }
+        if (actual.precio !== Number(item.producto.precio)) {
+          cambios.push(`${actual.nombre} cambió de precio`);
+        }
+        const cantidad = Math.min(item.cantidad, actual.stock);
+        if (cantidad < item.cantidad) {
+          cambios.push(`Solo quedan ${actual.stock} de ${actual.nombre}`);
+        }
+        return [{ producto: actual, cantidad }];
+      })
+    );
+    return cambios;
+  }
+
   cantidadDe(productoId: number): number {
     return this.items().find((item) => item.producto.id === productoId)?.cantidad ?? 0;
   }
