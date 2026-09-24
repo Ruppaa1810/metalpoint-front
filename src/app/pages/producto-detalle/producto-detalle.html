@@ -1,18 +1,21 @@
 <div class="max-w-7xl mx-auto px-4 py-8">
-  <a routerLink="/catalogo" class="text-sm text-slate-500 hover:text-amber-600 flex items-center gap-1 mb-6">
-    <i class="pi pi-arrow-left"></i> Volver al catálogo
-  </a>
+  <nav class="text-sm text-slate-500 flex flex-wrap items-center gap-1 mb-6" aria-label="Ubicación">
+    <a routerLink="/catalogo" class="hover:text-amber-600 flex items-center gap-1"><i class="pi pi-arrow-left text-xs"></i> Catálogo</a>
+    @if (producto()?.categoria; as categoria) {
+      <i class="pi pi-angle-right text-xs"></i>
+      <a routerLink="/catalogo" [queryParams]="{ categoria: categoria.categoria_padre_id ?? categoria.id, subcategoria: categoria.categoria_padre_id ? categoria.id : null }"
+         class="hover:text-amber-600">{{ categoria.nombre }}</a>
+    }
+  </nav>
 
   @if (huboError()) {
     <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex flex-wrap items-center justify-between gap-3">
       <p class="text-sm text-red-700 flex items-center gap-2">
         <i class="pi pi-exclamation-triangle"></i> No se pudo cargar el producto.
       </p>
-      <p-button label="Reintentar" icon="pi pi-refresh" severity="danger" [text]="true" (onClick)="cargarProducto()"></p-button>
+      <p-button label="Reintentar" icon="pi pi-refresh" severity="danger" [text]="true" (onClick)="reintentar()"></p-button>
     </div>
-  }
-
-  @if (cargando()) {
+  } @else if (cargando()) {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <p-skeleton width="100%" height="420px" borderRadius="16px"></p-skeleton>
       <div class="space-y-4">
@@ -22,68 +25,88 @@
         <p-skeleton width="40%" height="2.5rem"></p-skeleton>
       </div>
     </div>
-  } @else {
-    @if (producto(); as p) {
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div class="bg-slate-100 rounded-2xl overflow-hidden aspect-square">
-          @if (p.imagen_url && !imagenFallida()) {
-            <img [src]="p.imagen_url" [alt]="p.nombre" class="w-full h-full object-cover" (onError)="imagenFallida.set(true)">
+  } @else if (producto(); as p) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div class="bg-slate-100 rounded-2xl overflow-hidden aspect-square">
+        @if (p.imagen_url && !imagenFallida()) {
+          <img [src]="p.imagen_url" [alt]="p.nombre" class="w-full h-full object-cover" (error)="imagenFallida.set(true)">
+        } @else {
+          <div class="w-full h-full flex items-center justify-center text-slate-300">
+            <i class="pi pi-image text-7xl"></i>
+          </div>
+        }
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2 mb-2 text-sm text-slate-500">
+          <span class="uppercase tracking-wide">{{ p.marca?.nombre }}</span>
+          <span class="text-slate-300">·</span>
+          <span>{{ p.categoria?.nombre }}</span>
+        </div>
+
+        <h1 class="text-3xl font-bold text-slate-900 mb-4">{{ p.nombre }}</h1>
+
+        <div class="flex flex-wrap items-center gap-3 mb-6">
+          <span class="text-3xl font-black text-slate-900">$ {{ p.precio.toLocaleString('es-AR') }}</span>
+          <p-tag [value]="'por ' + p.unidad_medida" severity="secondary" [rounded]="true"></p-tag>
+          @if (p.stock === 0) {
+            <p-tag value="Sin stock" severity="danger" [rounded]="true"></p-tag>
+          } @else if (p.stock <= 5) {
+            <p-tag [value]="'Quedan ' + p.stock" severity="warn" [rounded]="true"></p-tag>
           } @else {
-            <div class="w-full h-full flex items-center justify-center text-slate-300">
-              <i class="pi pi-image text-7xl"></i>
-            </div>
+            <p-tag value="En stock" severity="success" [rounded]="true"></p-tag>
           }
         </div>
 
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-sm text-slate-500 uppercase tracking-wide">{{ p.marca?.nombre }}</span>
-            <span class="text-slate-300">·</span>
-            <span class="text-sm text-slate-500">{{ p.categoria?.nombre }}</span>
+        <p-divider></p-divider>
+
+        <h2 class="font-semibold text-slate-700 mb-2">Descripción</h2>
+        <p class="text-slate-600 mb-6 whitespace-pre-line">{{ p.descripcion || 'Este producto todavía no tiene descripción.' }}</p>
+
+        @if (enCarrito() > 0) {
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-sm text-amber-800 flex flex-wrap items-center justify-between gap-2">
+            <span><i class="pi pi-shopping-cart mr-1"></i> Ya tenés {{ enCarrito() }} en el carrito.</span>
+            <a routerLink="/carrito" class="font-semibold hover:underline">Ver carrito</a>
           </div>
+        }
 
-          <h1 class="text-3xl font-bold text-slate-900 mb-4">{{ p.nombre }}</h1>
-
-          <div class="flex items-center gap-3 mb-6">
-            <span class="text-3xl font-black text-slate-900">
-              $ {{ p.precio.toLocaleString('es-AR') }}
-            </span>
-            <p-tag [value]="'por ' + p.unidad_medida" severity="secondary" [rounded]="true"></p-tag>
-            @if (p.stock > 0) {
-              <p-tag value="En stock" severity="success" [rounded]="true"></p-tag>
-            } @else {
-              <p-tag value="Sin stock" severity="danger" [rounded]="true"></p-tag>
-            }
-          </div>
-
-          <p-divider></p-divider>
-
-          <h2 class="font-semibold text-slate-700 mb-2">Descripción</h2>
-          <p class="text-slate-600 mb-6">{{ p.descripcion }}</p>
-
-          <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 mb-6 text-sm">
-            <p class="flex items-center gap-2 text-slate-600"><i class="pi pi-box text-amber-500"></i> Stock disponible: <b>{{ p.stock }}</b> {{ p.unidad_medida }}(s)</p>
-          </div>
-
+        @if (disponible() > 0) {
           <div class="flex flex-wrap items-center gap-3">
             <div class="flex items-center gap-2 border border-slate-200 rounded-lg px-2 py-1 bg-white">
-              <p-button icon="pi pi-minus" severity="secondary" [text]="true" [rounded]="true" size="small" (onClick)="restarCantidad()" [disabled]="cantidad() <= 1 || p.stock === 0"></p-button>
+              <p-button icon="pi pi-minus" severity="secondary" [text]="true" [rounded]="true" size="small" (onClick)="restarCantidad()" [disabled]="cantidad() <= 1" ariaLabel="Restar"></p-button>
               <span class="w-8 text-center font-bold text-slate-800">{{ cantidad() }}</span>
-              <p-button icon="pi pi-plus" severity="secondary" [text]="true" [rounded]="true" size="small" (onClick)="sumarCantidad()" [disabled]="cantidad() >= p.stock"></p-button>
+              <p-button icon="pi pi-plus" severity="secondary" [text]="true" [rounded]="true" size="small" (onClick)="sumarCantidad()" [disabled]="cantidad() >= disponible()" ariaLabel="Sumar"></p-button>
             </div>
-            <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" (onClick)="agregarAlCarrito()" [disabled]="p.stock === 0"></p-button>
-            <a routerLink="/catalogo">
-              <p-button label="Seguir comprando" severity="secondary" [outlined]="true" icon="pi pi-th-large"></p-button>
-            </a>
+            <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" (onClick)="agregarAlCarrito()"></p-button>
           </div>
+        } @else if (p.stock > 0) {
+          <p class="text-sm text-slate-500">Ya agregaste todo el stock disponible de este producto.</p>
+        } @else {
+          <p class="text-sm text-slate-500">Por ahora no hay stock de este producto.</p>
+        }
+      </div>
+    </div>
+
+    @if (relacionados().length > 0) {
+      <section class="mt-14">
+        <h2 class="text-2xl font-bold text-slate-900 mb-6">También te puede servir</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          @for (relacionado of relacionados(); track relacionado.id) {
+            <app-producto-card [producto]="relacionado"
+                               [enCarrito]="enCarritoDe(relacionado)"
+                               [cantidadEnCarrito]="cantidadEnCarritoDe(relacionado)"
+                               (agregar)="agregarRelacionado($event)"
+                               (quitar)="quitarRelacionado($event)" />
+          }
         </div>
-      </div>
-    } @else {
-      <div class="text-center py-20 text-slate-400">
-        <i class="pi pi-exclamation-triangle text-5xl block mb-4"></i>
-        <p class="font-semibold">Producto no encontrado</p>
-        <a routerLink="/catalogo" class="text-amber-600 text-sm hover:underline">Volver al catálogo</a>
-      </div>
+      </section>
     }
+  } @else {
+    <div class="text-center py-20 text-slate-400">
+      <i class="pi pi-exclamation-triangle text-5xl block mb-4"></i>
+      <p class="font-semibold">Producto no encontrado</p>
+      <p class="text-sm mb-4">Puede que lo hayan dado de baja.</p>
+      <a routerLink="/catalogo" class="text-amber-600 text-sm hover:underline">Volver al catálogo</a>
+    </div>
   }
 </div>
