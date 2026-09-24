@@ -29,7 +29,8 @@
 
         @if (estaLogueado()) {
           <div class="flex items-center gap-2">
-            <p-button [label]="nombreUsuario()" icon="pi pi-user" severity="secondary" [text]="true" (onClick)="menu.toggle($event)"></p-button>
+            <p-button class="sm:hidden" icon="pi pi-user" severity="secondary" [text]="true" [ariaLabel]="nombreUsuario()" (onClick)="menu.toggle($event)"></p-button>
+            <p-button class="hidden sm:inline-flex" [label]="nombreUsuario()" icon="pi pi-user" severity="secondary" [text]="true" (onClick)="menu.toggle($event)"></p-button>
           </div>
         } @else {
           <a routerLink="/login">
