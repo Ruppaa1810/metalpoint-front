@@ -104,20 +104,20 @@
 
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Unidad de medida *</label>
-        <p-select formControlName="unidad_medida" [options]="opcionesUnidad" optionLabel="label" optionValue="value" class="w-full" />
+        <p-select appendTo="body" formControlName="unidad_medida" [options]="opcionesUnidad" optionLabel="label" optionValue="value" class="w-full" />
       </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Categoría *</label>
-          <p-select formControlName="categoria_id" [options]="opcionesCategoria" optionLabel="label" optionValue="value" placeholder="Seleccioná..." class="w-full" />
+          <p-select appendTo="body" formControlName="categoria_id" [options]="opcionesCategoria" optionLabel="label" optionValue="value" placeholder="Seleccioná..." class="w-full" />
           @if (formulario.get('categoria_id')?.invalid && formulario.get('categoria_id')?.touched) {
             <small class="text-red-500">Seleccioná una categoría.</small>
           }
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Marca *</label>
-          <p-select formControlName="marca_id" [options]="opcionesMarca" optionLabel="label" optionValue="value" placeholder="Seleccioná..." class="w-full" />
+          <p-select appendTo="body" formControlName="marca_id" [options]="opcionesMarca" optionLabel="label" optionValue="value" placeholder="Seleccioná..." class="w-full" />
           @if (formulario.get('marca_id')?.invalid && formulario.get('marca_id')?.touched) {
             <small class="text-red-500">Seleccioná una marca.</small>
           }
@@ -154,7 +154,7 @@
 
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Productos a actualizar *</label>
-        <p-multiselect formControlName="ids" [options]="productosSeleccionables" optionLabel="label" optionValue="value"
+        <p-multiselect appendTo="body" formControlName="ids" [options]="productosSeleccionables" optionLabel="label" optionValue="value"
                        placeholder="Seleccioná productos..." class="w-full"></p-multiselect>
         @if (formularioPrecios.get('ids')?.invalid && formularioPrecios.get('ids')?.touched) {
           <small class="text-red-500">Seleccioná al menos un producto.</small>
