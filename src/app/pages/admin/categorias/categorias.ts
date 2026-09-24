@@ -102,6 +102,7 @@ export class Categorias implements OnInit {
     operacion.subscribe({
       next: (respuesta) => {
         this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
+        this.guardando.set(false);
         this.dialogVisible.set(false);
         this.cargarCategorias();
       },

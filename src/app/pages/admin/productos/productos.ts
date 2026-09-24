@@ -171,6 +171,7 @@ export class Productos implements OnInit {
     operacion.subscribe({
       next: (respuesta) => {
         this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
+        this.guardando.set(false);
         this.dialogVisible.set(false);
         this.cargarProductos();
       },
@@ -228,6 +229,7 @@ export class Productos implements OnInit {
     this.productoService.actualizarPreciosMasivo(ids, porcentaje).subscribe({
       next: (respuesta) => {
         this.messageService.add({ severity: 'success', summary: 'Listo', detail: respuesta.message });
+        this.aplicandoPrecios.set(false);
         this.preciosVisible.set(false);
         this.formularioPrecios.reset({ ids: [], porcentaje: null });
         this.cargarProductos();
