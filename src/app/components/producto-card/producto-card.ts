@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -10,34 +10,31 @@ import { Producto } from '../../models/producto';
   templateUrl: './producto-card.html',
 })
 export class ProductoCard {
-  @Input({ required: true }) producto!: Producto;
-  @Input() enCarrito = false;
-  @Input() cantidadEnCarrito = 0;
+  producto = input.required<Producto>();
+  enCarrito = input(false);
+  cantidadEnCarrito = input(0);
 
-  @Output() agregar = new EventEmitter<Producto>();
-  @Output() quitar = new EventEmitter<Producto>();
+  agregar = output<Producto>();
+  quitar = output<Producto>();
 
-  onAgregar(): void {
-    this.agregar.emit(this.producto);
-  }
+  imagenFallida = signal(false);
 
-  onQuitar(): void {
-    this.quitar.emit(this.producto);
-  }
+  precioFormateado = computed(() => '$ ' + this.producto().precio.toLocaleString('es-AR'));
 
-  get precioFormateado(): string {
-    return '$ ' + this.producto.precio.toLocaleString('es-AR');
-  }
+  sinStock = computed(() => this.producto().stock <= 0);
 
-  get etiquetaUnidad(): string {
-    const plural = this.producto.stock > 1;
-    switch (this.producto.unidad_medida) {
+  pocoStock = computed(() => this.producto().stock > 0 && this.producto().stock <= 5);
+
+  etiquetaUnidad = computed(() => {
+    switch (this.producto().unidad_medida) {
       case 'unidad':
-        return plural ? 'unidades' : 'unidad';
+        return 'por unidad';
       case 'metro':
-        return plural ? 'metros' : 'metro';
-      default:
-        return this.producto.unidad_medida;
+        return 'por metro';
+      case 'kg':
+        return 'por kg';
+      case 'm2':
+        return 'por m²';
     }
-  }
+  });
 }
