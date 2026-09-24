@@ -110,14 +110,14 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Categoría *</label>
-          <p-select appendTo="body" formControlName="categoria_id" [options]="opcionesCategoria" optionLabel="label" optionValue="value" placeholder="Seleccioná..." class="w-full" />
+          <p-select appendTo="body" formControlName="categoria_id" [options]="opcionesCategoria" optionLabel="label" optionValue="value" placeholder="Seleccioná..." [filter]="true" filterPlaceholder="Buscar categoría" class="w-full" />
           @if (formulario.get('categoria_id')?.invalid && formulario.get('categoria_id')?.touched) {
             <small class="text-red-500">Seleccioná una categoría.</small>
           }
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Marca *</label>
-          <p-select appendTo="body" formControlName="marca_id" [options]="opcionesMarca" optionLabel="label" optionValue="value" placeholder="Seleccioná..." class="w-full" />
+          <p-select appendTo="body" formControlName="marca_id" [options]="opcionesMarca" optionLabel="label" optionValue="value" placeholder="Seleccioná..." [filter]="true" filterPlaceholder="Buscar marca" class="w-full" />
           @if (formulario.get('marca_id')?.invalid && formulario.get('marca_id')?.touched) {
             <small class="text-red-500">Seleccioná una marca.</small>
           }
@@ -125,14 +125,26 @@
       </div>
 
       <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">URL de imagen</label>
-        <input pInputText formControlName="imagen_url" placeholder="https://..." class="w-full">
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Imagen</label>
+        <p class="text-xs text-slate-500 mb-2">Pegá la URL de una imagen o subí una foto desde tu dispositivo.</p>
+        <input pInputText formControlName="imagen_url" placeholder="https://..." class="w-full" (input)="imagenFallida.set(false)">
         @if (formulario.get('imagen_url')?.invalid && formulario.get('imagen_url')?.touched) {
           <small class="text-red-500">Debe ser una URL válida (https://...).</small>
         }
+
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          <input #selectorImagen type="file" accept="image/*" class="hidden" (change)="subirImagen($event)">
+          <p-button label="Subir imagen" icon="pi pi-upload" severity="secondary" [outlined]="true" size="small"
+                    [loading]="subiendoImagen()" (onClick)="selectorImagen.click()"></p-button>
+          @if (imagenPreview) {
+            <p-button label="Quitar" icon="pi pi-times" severity="danger" [text]="true" size="small" (onClick)="quitarImagen()"></p-button>
+          }
+          <small class="text-slate-400">JPG, PNG o WEBP. Se achica sola antes de subir.</small>
+        </div>
+
         @if (imagenPreview) {
           @if (!imagenFallida()) {
-            <img [src]="imagenPreview" alt="Vista previa" class="mt-2 w-24 h-24 rounded-lg object-cover border" (onError)="imagenFallida.set(true)">
+            <img [src]="imagenPreview" alt="Vista previa" class="mt-3 w-32 h-32 rounded-lg object-cover border" (error)="imagenFallida.set(true)">
           } @else {
             <p class="mt-2 text-xs text-slate-400">
               <i class="pi pi-exclamation-circle mr-1"></i> La imagen no se pudo cargar desde esa URL.

@@ -43,6 +43,7 @@ export class Productos implements OnInit {
   guardando = signal(false);
   editandoId: number | null = null;
   imagenFallida = signal(false);
+  subiendoImagen = signal(false);
 
   preciosVisible = signal(false);
   aplicandoPrecios = signal(false);
@@ -117,7 +118,14 @@ export class Productos implements OnInit {
   }
 
   get opcionesCategoria() {
-    return this.categorias().map((c) => ({ label: c.nombre, value: c.id }));
+    const categorias = this.categorias();
+    const nombreDe = (id: number) => categorias.find((c) => c.id === id)?.nombre;
+    return categorias
+      .map((c) => ({
+        label: c.categoria_padre_id ? `${nombreDe(c.categoria_padre_id)} › ${c.nombre}` : c.nombre,
+        value: c.id
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }
 
   get opcionesMarca() {
@@ -130,6 +138,59 @@ export class Productos implements OnInit {
 
   get imagenPreview(): string {
     return this.formulario.get('imagen_url')?.value ?? '';
+  }
+
+  async subirImagen(evento: Event) {
+    const selector = evento.target as HTMLInputElement;
+    const archivo = selector.files?.[0];
+    selector.value = '';
+    if (!archivo) {
+      return;
+    }
+    if (!archivo.type.startsWith('image/')) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El archivo tiene que ser una imagen.' });
+      return;
+    }
+
+    this.subiendoImagen.set(true);
+    try {
+      const imagen = await this.achicarImagen(archivo);
+      this.productoService.subirImagen(imagen).subscribe({
+        next: (respuesta) => {
+          this.formulario.patchValue({ imagen_url: respuesta.data.url });
+          this.formulario.get('imagen_url')?.markAsDirty();
+          this.imagenFallida.set(false);
+          this.subiendoImagen.set(false);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: obtenerMensajeDeError(error) });
+          this.subiendoImagen.set(false);
+        }
+      });
+    } catch {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo leer la imagen.' });
+      this.subiendoImagen.set(false);
+    }
+  }
+
+  quitarImagen() {
+    this.formulario.patchValue({ imagen_url: '' });
+    this.imagenFallida.set(false);
+  }
+
+  private async achicarImagen(archivo: File): Promise<Blob> {
+    const original = await createImageBitmap(archivo);
+    const escala = Math.min(1, 1200 / Math.max(original.width, original.height));
+    const lienzo = document.createElement('canvas');
+    lienzo.width = Math.round(original.width * escala);
+    lienzo.height = Math.round(original.height * escala);
+    const contexto = lienzo.getContext('2d')!;
+    contexto.fillStyle = '#ffffff';
+    contexto.fillRect(0, 0, lienzo.width, lienzo.height);
+    contexto.drawImage(original, 0, 0, lienzo.width, lienzo.height);
+    return new Promise((resolver, rechazar) =>
+      lienzo.toBlob((blob) => (blob ? resolver(blob) : rechazar()), 'image/jpeg', 0.85)
+    );
   }
 
   abrirNueva() {

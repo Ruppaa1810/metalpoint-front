@@ -38,6 +38,12 @@ export class ProductoService {
     return this.http.delete<RespuestaServidor>(`${this.urlAdmin}/${id}`);
   }
 
+  subirImagen(imagen: Blob): Observable<RespuestaServidor & { data: { url: string } }> {
+    const datos = new FormData();
+    datos.append('imagen', imagen, 'imagen.jpg');
+    return this.http.post<RespuestaServidor & { data: { url: string } }>(`${environment.apiUrl}/admin/imagenes`, datos);
+  }
+
   actualizarPreciosMasivo(ids: number[], porcentaje: number): Observable<RespuestaServidor> {
     return this.http.post<RespuestaServidor>(`${this.urlAdmin}/actualizar-precios`, {
       ids,
