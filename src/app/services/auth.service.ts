@@ -26,9 +26,9 @@ export class AuthService {
   private readonly CLAVE_TOKEN = 'metalpoint_token';
   private readonly CLAVE_USUARIO = 'metalpoint_usuario';
 
-  usuario = signal<Usuario | null>(null);
-  estaLogueado = signal<boolean>(false);
-  esAdmin = signal<boolean>(false);
+  usuario = signal<Usuario | null>(this.cargarUsuario());
+  estaLogueado = signal<boolean>(this.tieneToken());
+  esAdmin = signal<boolean>(this.tieneToken() && this.cargarUsuario()?.role === 'admin');
   sesionVerificada = signal<boolean>(false);
 
   login(email: string, password: string): Observable<AuthRespuesta> {
