@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
+import { Sidebar } from '../../../shared/components/sidebar/sidebar';
+import { RouterLink, RouterOutlet } from '@angular/router';
+
 
 @Component({
   selector: 'app-admin-layout',
-  imports: [],
+  imports: [Sidebar, RouterOutlet, RouterLink],
   templateUrl: './admin-layout.html',
-  styles: ``,
 })
-export class AdminLayout {}
+export class AdminLayout {
+
+}
