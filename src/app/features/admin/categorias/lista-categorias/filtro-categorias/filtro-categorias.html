@@ -1,0 +1,22 @@
+<div class="bg-surface-300 rounded-xl border border-surface-400 p-7 shadow-sm">
+    <div class="flex flex-col md:flex-row gap-4 justify-between">
+        <!-- Search -->
+        <div class="flex-1 relative">
+            <p-floatlabel>
+                <p-icon-field>
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText id="over_label" autocomplete="off" fluid />
+                </p-icon-field>
+                <label for="over_label">Busca categorias por nombre</label>
+            </p-floatlabel>
+        </div>
+        <!-- Filter Group -->
+        <div class="flex flex-col sm:flex-row gap-3">
+            <div class="self-center">
+                <p-button label="Reset" [raised]="true" severity="secondary" icon="pi pi-filter-slash"
+                    [disabled]="true" />
+            </div>
+
+        </div>
+    </div>
+</div>

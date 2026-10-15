@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { FiltroCategorias } from './filtro-categorias/filtro-categorias';
 
 export interface Categoria {
   Nombre: string;
@@ -13,7 +14,7 @@ export interface Categoria {
 
 @Component({
   selector: 'app-lista-categorias',
-  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, RouterLink],
+  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, RouterLink, FiltroCategorias],
   templateUrl: './lista-categorias.html',
   styles: ``,
 })
