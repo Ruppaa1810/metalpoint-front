@@ -1,9 +1,45 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+
+export interface Categoria {
+  Nombre: string;
+  Padre: string;
+  Productos: number;
+}
 
 @Component({
   selector: 'app-lista-categorias',
-  imports: [],
+  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, RouterLink],
   templateUrl: './lista-categorias.html',
   styles: ``,
 })
-export class ListaCategorias {}
+export class ListaCategorias {
+  categorias: Categoria[] =
+    [
+      {
+        "Nombre": "Perfiles y Hierros",
+        "Padre": "-",
+        "Productos": 12,
+      },
+      {
+        "Nombre": "Caños Estructurales",
+        "Padre": "Perfiles y Hierros",
+        "Productos": 5,
+      },
+      {
+        "Nombre": "Abrasivos y Corte",
+        "Padre": "-",
+        "Productos": 8,
+      },
+      {
+        "Nombre": "Soldadura e Insumos",
+        "Padre": "-",
+        "Productos": 15,
+      },
+
+    ];
+}

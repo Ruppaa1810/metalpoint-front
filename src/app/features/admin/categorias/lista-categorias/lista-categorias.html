@@ -1,1 +1,50 @@
-<p>lista-categorias works!</p>
+<div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+    <div class="max-w-7xl mx-auto flex flex-col gap-4">
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Categorias</h1>
+                <p class="text-slate-600">Administra la organización de tus productos por categorias</p>
+            </div>
+            <p-button label="Añadir Categoria" [raised]="true" severity="primary" icon="pi pi-plus"
+                [routerLink]="['/admin/form-categoria']" />
+        </div>
+
+        <!-- TABLA -->
+        <div class="card">
+            <p-table [value]="categorias" [tableStyle]="{ 'min-width': '60rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Categoria Padre</th>
+                        <th class="text-center!">Productos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-categoria>
+                    <tr>
+                        <td class="font-semibold">
+                            {{ categoria.Nombre }}
+                        </td>
+                        <td>{{ categoria.Padre }}</td>
+                        <td class="text-center!">
+                            <p-tag [value]="categoria.Productos" severity="info" />
+                        </td>
+                        <td>
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
+                                severity="secondary" class="mr-4" />
+                            <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template #footer>
+                    <tr>
+                        <td colspan="6">En total son {{ categorias ? categorias.length : 0 }} categorias.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+
+    </div>
+</div>
