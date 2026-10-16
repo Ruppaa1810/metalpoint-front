@@ -1,0 +1,59 @@
+<div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+    <div class="max-w-7xl mx-auto flex flex-col gap-4">
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900">Inventario de Productos</h1>
+                <p class="text-slate-600">Administra tu catálogo, stock y categorías</p>
+            </div>
+            <p-button label="Añadir nuevo producto" [raised]="true" severity="primary" icon="pi pi-plus"
+                [routerLink]="['/admin/form-producto']" />
+        </div>
+
+        <app-filtro-productos></app-filtro-productos>
+
+        <!-- TABLA -->
+        <div class="card">
+            <p-table [value]="products" [tableStyle]="{ 'min-width': '60rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Marca</th>
+                        <th>Stock</th>
+                        <th>Precio</th>
+                        <th>Status</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-product>
+                    <tr>
+                        <td class="flex items-center gap-3 font-semibold pr-0 mr-0">
+                            <img [src]="product.Imagen" [alt]="product.Nombre" class="w-24 rounded" />
+                            {{ product.Nombre }}
+                        </td>
+                        <td>{{ product.Categoria }}</td>
+                        <td>{{ product.Marca }}</td>
+                        <td>{{ product.Stock }}</td>
+                        <td>{{ product.Precio }}</td>
+                        <td>
+                            <p-tag [value]="product.Status" [severity]="getSeverity(product.Status)" />
+                        </td>
+                        <td>
+                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
+                                severity="secondary" class="mr-4" />
+                            <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template #footer>
+                    <tr>
+                        <td colspan="7">En total son {{ products ? products.length : 0 }} productos.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+
+    </div>
+</div>

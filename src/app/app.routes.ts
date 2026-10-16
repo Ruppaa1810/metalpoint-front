@@ -3,6 +3,8 @@ import { ListaCategorias } from './features/admin/categorias/lista-categorias/li
 import { FormCategoria } from './features/admin/categorias/form-categoria/form-categoria';
 import { ListaMarcas } from './features/admin/marcas/lista-marcas/lista-marcas';
 import { FormMarca } from './features/admin/marcas/form-marca/form-marca';
+import { ListaProductos } from './features/admin/productos/lista-productos/lista-productos';
+import { FormProducto } from './features/admin/productos/form-producto/form-producto';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 
 export const routes: Routes = [
@@ -13,6 +15,8 @@ export const routes: Routes = [
             { path: 'form-categoria', component: FormCategoria, title: 'FormCategoria' },
             { path: 'lista-marcas', component: ListaMarcas, title: 'ListaMarcas' },
             { path: 'form-marca', component: FormMarca, title: 'FormMarca' },
+            { path: 'lista-productos', component: ListaProductos, title: 'ListaProductos' },
+            { path: 'form-producto', component: FormProducto, title: 'FormProducto' },
             { path: '', pathMatch: 'full', redirectTo: 'lista-categorias' },
             { path: '**', redirectTo: 'lista-categorias'}
         ]

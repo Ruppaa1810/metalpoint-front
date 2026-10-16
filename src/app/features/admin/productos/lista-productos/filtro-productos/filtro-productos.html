@@ -1,0 +1,32 @@
+<div class="bg-white rounded-xl border border-gray-200 p-7 shadow-sm">
+    <div class="flex flex-col md:flex-row gap-4 justify-between">
+        <!-- Search -->
+        <div class="flex-1 relative">
+            <p-floatlabel>
+                <p-icon-field>
+                    <p-inputicon class="pi pi-search" />
+                    <input pInputText id="buscar_producto" autocomplete="off" class="w-full" />
+                </p-icon-field>
+                <label for="buscar_producto">Busca por nombre o marca</label>
+            </p-floatlabel>
+        </div>
+        <!-- Filter Group -->
+        <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative min-w-40">
+                <p-select [options]="categorias" optionLabel="name" placeholder="Selecciona una categoría"
+                    class="w-full md:w-56" appendTo="body" />
+            </div>
+
+            <div class="relative min-w-40">
+                <p-select [options]="estado" optionLabel="name" placeholder="Selecciona un estado"
+                    class="w-full md:w-56" appendTo="body" />
+            </div>
+
+            <div class="self-center">
+                <p-button label="Reset" [raised]="true" severity="secondary" icon="pi pi-filter-slash"
+                    [disabled]="true" />
+            </div>
+
+        </div>
+    </div>
+</div>
