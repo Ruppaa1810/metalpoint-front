@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { ListaCategorias } from './features/admin/categorias/lista-categorias/lista-categorias';
 import { FormCategoria } from './features/admin/categorias/form-categoria/form-categoria';
+import { ListaMarcas } from './features/admin/marcas/lista-marcas/lista-marcas';
+import { FormMarca } from './features/admin/marcas/form-marca/form-marca';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 
 export const routes: Routes = [
@@ -9,6 +11,8 @@ export const routes: Routes = [
         children: [
             { path: 'lista-categorias', component: ListaCategorias, title: 'ListaCategorias' },
             { path: 'form-categoria', component: FormCategoria, title: 'FormCategoria' },
+            { path: 'lista-marcas', component: ListaMarcas, title: 'ListaMarcas' },
+            { path: 'form-marca', component: FormMarca, title: 'FormMarca' },
             { path: '', pathMatch: 'full', redirectTo: 'lista-categorias' },
             { path: '**', redirectTo: 'lista-categorias'}
         ]
