@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 export interface Marca {
   Nombre: string;
@@ -12,11 +13,13 @@ export interface Marca {
 
 @Component({
   selector: 'app-lista-marcas',
-  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, RouterLink],
+  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, PageHeader],
   templateUrl: './lista-marcas.html',
   styles: ``,
 })
 export class ListaMarcas {
+  private router = inject(Router);
+
   marcas: Marca[] =
     [
       {
@@ -37,4 +40,8 @@ export class ListaMarcas {
       },
 
     ];
+
+  nuevaMarca() {
+    this.router.navigate(['/admin/form-marca']);
+  }
 }

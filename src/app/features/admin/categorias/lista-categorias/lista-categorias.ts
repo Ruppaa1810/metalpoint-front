@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { FiltroCategorias } from './filtro-categorias/filtro-categorias';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 export interface Categoria {
   Nombre: string;
@@ -14,11 +15,13 @@ export interface Categoria {
 
 @Component({
   selector: 'app-lista-categorias',
-  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, RouterLink, FiltroCategorias],
+  imports: [ButtonModule, TableModule, SkeletonModule, TagModule, FiltroCategorias, PageHeader],
   templateUrl: './lista-categorias.html',
   styles: ``,
 })
 export class ListaCategorias {
+  private router = inject(Router);
+
   categorias: Categoria[] =
     [
       {
@@ -43,4 +46,8 @@ export class ListaCategorias {
       },
 
     ];
+
+  nuevaCategoria() {
+    this.router.navigate(['/admin/form-categoria']);
+  }
 }

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FiltroProductos } from './filtro-productos/filtro-productos';
+import { PageHeader } from '../../../../shared/components/page-header/page-header';
 
 export interface Producto {
   Nombre: string;
@@ -18,11 +19,12 @@ export interface Producto {
 
 @Component({
   selector: 'app-lista-productos',
-  imports: [ButtonModule, FiltroProductos, TableModule, SkeletonModule, TagModule, RouterLink],
+  imports: [ButtonModule, FiltroProductos, TableModule, SkeletonModule, TagModule, PageHeader],
   templateUrl: './lista-productos.html',
   styles: ``,
 })
 export class ListaProductos {
+  private router = inject(Router);
 
   products: Producto[] =
     [
@@ -75,5 +77,9 @@ export class ListaProductos {
       default:
         return 'success';
     }
+  }
+
+  nuevoProducto() {
+    this.router.navigate(['/admin/form-producto']);
   }
 }

@@ -1,0 +1,12 @@
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900">{{ titulo() }}</h1>
+        @if (descripcion()) {
+        <p class="text-slate-600">{{ descripcion() }}</p>
+        }
+    </div>
+    @if (textoBoton()) {
+    <p-button [label]="textoBoton()" [raised]="true" severity="primary" icon="pi pi-plus"
+        (onClick)="presionarBoton()" />
+    }
+</div>
