@@ -40,7 +40,8 @@
                             <div class="flex flex-row">
                                 <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
                                     severity="secondary" class="mr-4" (onClick)="editarProducto(product)" />
-                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger"
+                                    (onClick)="eliminarProducto(product.id)" />
                             </div>
                         </td>
                     </tr>

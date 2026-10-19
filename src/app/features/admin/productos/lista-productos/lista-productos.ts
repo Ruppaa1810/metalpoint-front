@@ -8,6 +8,7 @@ import { FiltroProductos } from './filtro-productos/filtro-productos';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { ProductosService } from '../productos.service';
 import { Producto } from '../../../../core/models/producto.model';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-lista-productos',
@@ -19,6 +20,9 @@ export class ListaProductos {
   private productosService = inject(ProductosService);
   private router = inject(Router);
 
+  private confirmationService = inject(ConfirmationService);
+  private toastService = inject(MessageService);
+
   protected products = signal<Producto[]>([]);
 
   ngOnInit() {
@@ -26,11 +30,14 @@ export class ListaProductos {
   }
 
   obtenerProductos() {
-    this.productosService.obtenerProductos().subscribe(
-      (data) => {
+    this.productosService.obtenerProductos().subscribe({
+      next: (data) => {
         this.products.set(data);
+      },
+      error: () => {
+        this.toastService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los productos' });
       }
-    )
+    })
   }
 
   // El estado se calcula según el stock
@@ -65,5 +72,24 @@ export class ListaProductos {
   nuevoProducto() {
     this.productosService.setProductoEditar(null);
     this.router.navigate(['/admin/form-producto']);
+  }
+
+  eliminarProducto(producto_id: number) {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de eliminar el producto?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.productosService.eliminarProducto(producto_id).subscribe({
+          next: () => {
+            this.obtenerProductos();
+            this.toastService.add({ severity: 'success', summary: 'Producto eliminado' });
+          },
+          error: () => {
+            this.toastService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el producto' });
+          }
+        })
+      }
+    });
   }
 }

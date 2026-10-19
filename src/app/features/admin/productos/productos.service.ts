@@ -29,4 +29,8 @@ export class ProductosService {
   actualizarProducto(producto: Producto, id_producto: number){
     return this.httpClient.put<any>(`${this.apiURL}/${id_producto}`, producto);
   }
+
+  eliminarProducto(id_producto: number){
+    return this.httpClient.delete<any>(`${this.apiURL}/${id_producto}`);
+  }
 }
