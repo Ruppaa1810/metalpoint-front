@@ -33,7 +33,13 @@ export class ListaCategorias {
     )
   }
 
+  editarCategoria(categoria: Categoria) {
+    this.categoriasService.setCategoriaEditar(categoria);
+    this.router.navigate(['/admin/form-categoria']);
+  }
+
   nuevaCategoria() {
+    this.categoriasService.setCategoriaEditar(null);
     this.router.navigate(['/admin/form-categoria']);
   }
 }

@@ -5,7 +5,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { Select } from 'primeng/select';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { CategoriasService } from '../categorias.service';
@@ -22,6 +22,7 @@ import { Categoria } from '../../../../core/models/categoria.model';
 export class FormCategoria {
   private fb = inject(FormBuilder);
   private categoriaService = inject(CategoriasService);
+  private router = inject(Router);
 
   protected categoriasPadre = signal<Categoria[]>([]);
 
@@ -32,6 +33,15 @@ export class FormCategoria {
 
   ngOnInit() {
     this.obtenerCategoriasPadre();
+
+    if (this.categoriaService.categoria_editar() != null) {
+      this.formCategoria.patchValue({
+        nombre: this.categoriaService.categoria_editar()?.nombre,
+        categoria_padre_id: this.categoriaService.categoria_editar()?.categoria_padre_id
+      })
+    } else {
+      this.formCategoria.reset();
+    }
   }
 
   obtenerCategoriasPadre() {
@@ -44,15 +54,32 @@ export class FormCategoria {
   }
 
   guardarCategoria() {
-    if(!this.formCategoria.invalid) {
-      const categoria: any = this.formCategoria.value;
+    if (!this.formCategoria.invalid) {
+      let categoria: Categoria = {
+        nombre: this.formCategoria.value.nombre!,
+        categoria_padre_id: this.formCategoria.value.categoria_padre_id ? Number(this.formCategoria.value.categoria_padre_id) : null
+      }
 
-      this.categoriaService.guardarCategoria(categoria).subscribe(
-        (data)=> {
-          alert(data.message);
-          this.formCategoria.reset();
-        }
-      )
+      if (this.categoriaService.categoria_editar() == null) {
+        this.categoriaService.guardarCategoria(categoria).subscribe(
+          (data) => {
+            alert(data.message);
+            this.finalizarGuardado();
+          }
+        )
+      } else {
+        this.categoriaService.actualizarCategoria(categoria, this.categoriaService.categoria_editar()?.id!).subscribe(
+          (data) => {
+            alert(data.message);
+            this.finalizarGuardado();
+          }
+        )
+      }
     }
+  }
+
+  finalizarGuardado() {
+    this.formCategoria.reset();
+    this.router.navigate(['/admin/lista-categorias']);
   }
 }
