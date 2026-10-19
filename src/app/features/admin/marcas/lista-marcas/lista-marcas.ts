@@ -7,6 +7,7 @@ import { TagModule } from 'primeng/tag';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { MarcasService } from '../marcas.service';
 import { Marca } from '../../../../core/models/marca.model';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-lista-marcas',
@@ -18,6 +19,9 @@ export class ListaMarcas {
   private marcasService = inject(MarcasService);
   private router = inject(Router);
 
+  private confirmationService = inject(ConfirmationService);
+  private toastService = inject(MessageService);
+
   protected marcas = signal<Marca[]>([]);
 
   ngOnInit() {
@@ -25,11 +29,14 @@ export class ListaMarcas {
   }
 
   obtenerMarcas() {
-    this.marcasService.obtenerMarcas().subscribe(
-      (data) => {
+    this.marcasService.obtenerMarcas().subscribe({
+      next: (data) => {
         this.marcas.set(data);
+      },
+      error: () => {
+        this.toastService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las marcas' });
       }
-    )
+    })
   }
 
   editarMarca(marca: Marca) {
@@ -40,5 +47,24 @@ export class ListaMarcas {
   nuevaMarca() {
     this.marcasService.setMarcaEditar(null);
     this.router.navigate(['/admin/form-marca']);
+  }
+
+  eliminarMarca(marca_id: number) {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de eliminar la marca?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.marcasService.eliminarMarca(marca_id).subscribe({
+          next: () => {
+            this.obtenerMarcas();
+            this.toastService.add({ severity: 'success', summary: 'Marca eliminada' });
+          },
+          error: () => {
+            this.toastService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la marca' });
+          }
+        })
+      }
+    });
   }
 }
