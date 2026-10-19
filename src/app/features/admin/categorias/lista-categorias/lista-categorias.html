@@ -5,11 +5,13 @@
             descripcion="Administra la organización de tus productos por categorias"
             textoBoton="Añadir Categoria" (botonPresionado)="nuevaCategoria()" />
 
-        <app-filtro-categorias></app-filtro-categorias>   
+        <app-filtro-categorias></app-filtro-categorias>
 
         <!-- TABLA -->
         <div class="card">
-            <p-table [value]="categorias" [tableStyle]="{ 'min-width': '60rem' }">
+
+            <p-table [value]="categorias()"
+            [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '30rem' }">
                 <ng-template #header>
                     <tr>
                         <th>Categoria</th>
@@ -21,22 +23,24 @@
                 <ng-template #body let-categoria>
                     <tr>
                         <td class="font-semibold">
-                            {{ categoria.Nombre }}
+                            {{ categoria.nombre }}
                         </td>
-                        <td>{{ categoria.Padre }}</td>
+                        <td>{{ categoria.categoria_padre?.nombre ?? '-' }}</td>
                         <td class="text-center!">
-                            <p-tag [value]="categoria.Productos" severity="info" />
+                            <p-tag [value]="categoria.productos_count" severity="info" />
                         </td>
                         <td>
-                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
-                                severity="secondary" class="mr-4" />
-                            <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                            <div class="flex flex-row">
+                                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
+                                    severity="secondary" class="mr-4" />
+                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template #footer>
                     <tr>
-                        <td colspan="6">En total son {{ categorias ? categorias.length : 0 }} categorias.</td>
+                        <td colspan="6">En total son {{ categorias() ? categorias().length : 0 }} categorias.</td>
                     </tr>
                 </ng-template>
             </p-table>
