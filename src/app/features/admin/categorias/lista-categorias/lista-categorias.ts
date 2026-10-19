@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { FiltroCategorias } from './filtro-categorias/filtro-categorias';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
+import { CategoriasService } from '../categorias.service';
 
 export interface Categoria {
   Nombre: string;
@@ -21,6 +22,19 @@ export interface Categoria {
 })
 export class ListaCategorias {
   private router = inject(Router);
+  private categoriasService = inject(CategoriasService);
+
+  ngOnInit() {
+    this.obtenerCategorias();
+  }
+
+  obtenerCategorias() {
+    this.categoriasService.obtenerCategorias().subscribe(
+      (data) => {
+        console.log(data);
+      }
+    )
+  }
 
   categorias: Categoria[] =
     [

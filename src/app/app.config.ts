@@ -5,12 +5,14 @@ import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
 import MyPreset from '../theme/my-preset';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
+    provideHttpClient(withFetch()),
 
     provideAnimationsAsync(),
     providePrimeNG({
