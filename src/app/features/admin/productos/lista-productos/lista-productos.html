@@ -9,7 +9,8 @@
 
         <!-- TABLA -->
         <div class="card">
-            <p-table [value]="products" [tableStyle]="{ 'min-width': '60rem' }">
+            <p-table [value]="products()"
+            [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '60rem' }">
                 <ng-template #header>
                     <tr>
                         <th>Producto</th>
@@ -24,26 +25,29 @@
                 <ng-template #body let-product>
                     <tr>
                         <td class="flex items-center gap-3 font-semibold pr-0 mr-0">
-                            <img [src]="product.Imagen" [alt]="product.Nombre" class="w-24 rounded" />
-                            {{ product.Nombre }}
+                            <img [src]="product.imagen_url || 'https://placehold.co/96x64?text=Sin+imagen'"
+                                [alt]="product.nombre" class="w-24 rounded" />
+                            {{ product.nombre }}
                         </td>
-                        <td>{{ product.Categoria }}</td>
-                        <td>{{ product.Marca }}</td>
-                        <td>{{ product.Stock }}</td>
-                        <td>{{ product.Precio }}</td>
+                        <td>{{ product.categoria?.nombre }}</td>
+                        <td>{{ product.marca?.nombre }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>{{ product.precio }}</td>
                         <td>
-                            <p-tag [value]="product.Status" [severity]="getSeverity(product.Status)" />
+                            <p-tag [value]="getStatus(product.stock)" [severity]="getSeverity(getStatus(product.stock))" />
                         </td>
                         <td>
-                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
-                                severity="secondary" class="mr-4" />
-                            <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                            <div class="flex flex-row">
+                                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
+                                    severity="secondary" class="mr-4" />
+                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template #footer>
                     <tr>
-                        <td colspan="7">En total son {{ products ? products.length : 0 }} productos.</td>
+                        <td colspan="7">En total son {{ products() ? products().length : 0 }} productos.</td>
                     </tr>
                 </ng-template>
             </p-table>
