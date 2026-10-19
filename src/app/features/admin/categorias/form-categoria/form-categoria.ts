@@ -10,6 +10,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { CategoriasService } from '../categorias.service';
 import { Categoria } from '../../../../core/models/categoria.model';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-form-categoria',
@@ -23,6 +24,7 @@ export class FormCategoria {
   private fb = inject(FormBuilder);
   private categoriaService = inject(CategoriasService);
   private router = inject(Router);
+  private toastService = inject(MessageService);
 
   protected categoriasPadre = signal<Categoria[]>([]);
 
@@ -63,15 +65,14 @@ export class FormCategoria {
       if (this.categoriaService.categoria_editar() == null) {
         this.categoriaService.guardarCategoria(categoria).subscribe(
           (data) => {
-            alert(data.message);
+            this.toastService.add({ severity: 'success', summary: data.message });
             this.finalizarGuardado();
           }
         )
       } else {
         this.categoriaService.actualizarCategoria(categoria, this.categoriaService.categoria_editar()?.id!).subscribe(
           (data) => {
-            alert(data.message);
-            this.finalizarGuardado();
+            this.toastService.add({ severity: 'success', summary: data.message });
           }
         )
       }

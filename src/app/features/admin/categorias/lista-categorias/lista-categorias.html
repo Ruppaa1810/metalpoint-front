@@ -33,7 +33,8 @@
                             <div class="flex flex-row">
                                 <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
                                     severity="secondary" class="mr-4" (onClick)="editarCategoria(categoria)" />
-                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger"
+                                    (onClick)="eliminarCategoria(categoria.id)" />
                             </div>
                         </td>
                     </tr>

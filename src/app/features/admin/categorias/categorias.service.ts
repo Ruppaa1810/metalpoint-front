@@ -29,4 +29,8 @@ export class CategoriasService {
   actualizarCategoria(categoria: Categoria, id_categoria: number){
     return this.httpClient.put<any>(`${this.apiURL}/${id_categoria}`, categoria);
   }
+
+  eliminarCategoria(id_categoria: number){
+    return this.httpClient.delete<any>(`${this.apiURL}/${id_categoria}`);
+  }
 }

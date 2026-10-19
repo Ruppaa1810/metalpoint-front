@@ -8,6 +8,7 @@ import { FiltroCategorias } from './filtro-categorias/filtro-categorias';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
 import { CategoriasService } from '../categorias.service';
 import { Categoria } from '../../../../core/models/categoria.model';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-lista-categorias',
@@ -18,6 +19,9 @@ import { Categoria } from '../../../../core/models/categoria.model';
 export class ListaCategorias {
   private categoriasService = inject(CategoriasService);
   private router = inject(Router);
+
+  private confirmationService = inject(ConfirmationService);
+  private toastService = inject(MessageService);
 
   protected categorias = signal<Categoria[]>([]);
 
@@ -41,5 +45,21 @@ export class ListaCategorias {
   nuevaCategoria() {
     this.categoriasService.setCategoriaEditar(null);
     this.router.navigate(['/admin/form-categoria']);
+  }
+
+  eliminarCategoria(categoria_id: number) {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de eliminar la categoria?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.categoriasService.eliminarCategoria(categoria_id).subscribe(
+          (data) => {
+            this.obtenerCategorias();
+            this.toastService.add({ severity: 'success', summary: 'Categoria eliminada' });
+          }
+        )
+      }
+    });
   }
 }
