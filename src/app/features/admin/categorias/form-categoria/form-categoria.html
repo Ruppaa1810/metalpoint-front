@@ -9,7 +9,8 @@
             <div class="flex gap-4">
                 <p-button label="Cancelar" [raised]="true" severity="secondary"
                     [routerLink]="['/admin/lista-categorias']" />
-                <p-button label="Guardar Categoria" [raised]="true" severity="primary" icon="pi pi-save" />
+                <p-button label="Guardar Categoria" [raised]="true" severity="primary" icon="pi pi-save"
+                    (onClick)="guardarCategoria()" />
             </div>
         </div>
 

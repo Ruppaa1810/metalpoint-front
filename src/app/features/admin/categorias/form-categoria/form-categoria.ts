@@ -42,4 +42,17 @@ export class FormCategoria {
       }
     )
   }
+
+  guardarCategoria() {
+    if(!this.formCategoria.invalid) {
+      const categoria: any = this.formCategoria.value;
+
+      this.categoriaService.guardarCategoria(categoria).subscribe(
+        (data)=> {
+          alert(data.message);
+          this.formCategoria.reset();
+        }
+      )
+    }
+  }
 }
