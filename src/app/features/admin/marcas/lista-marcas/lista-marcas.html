@@ -7,7 +7,9 @@
 
         <!-- TABLA -->
         <div class="card">
-            <p-table [value]="marcas" [tableStyle]="{ 'min-width': '60rem' }">
+
+            <p-table [value]="marcas()"
+            [paginator]="true" [rows]="5" [tableStyle]="{ 'min-width': '30rem' }">
                 <ng-template #header>
                     <tr>
                         <th>Marca</th>
@@ -18,21 +20,23 @@
                 <ng-template #body let-marca>
                     <tr>
                         <td class="font-semibold">
-                            {{ marca.Nombre }}
+                            {{ marca.nombre }}
                         </td>
                         <td class="text-center!">
-                            <p-tag [value]="marca.Productos" severity="info" />
+                            <p-tag [value]="marca.productos_count" severity="info" />
                         </td>
                         <td>
-                            <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
-                                severity="secondary" class="mr-4" />
-                            <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                            <div class="flex flex-row">
+                                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true"
+                                    severity="secondary" class="mr-4" />
+                                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" />
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template #footer>
                     <tr>
-                        <td colspan="6">En total son {{ marcas ? marcas.length : 0 }} marcas.</td>
+                        <td colspan="6">En total son {{ marcas() ? marcas().length : 0 }} marcas.</td>
                     </tr>
                 </ng-template>
             </p-table>

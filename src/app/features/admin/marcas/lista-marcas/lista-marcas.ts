@@ -1,15 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
-
-export interface Marca {
-  Nombre: string;
-  Productos: number;
-}
+import { MarcasService } from '../marcas.service';
+import { Marca } from '../../../../core/models/marca.model';
 
 @Component({
   selector: 'app-lista-marcas',
@@ -18,28 +15,22 @@ export interface Marca {
   styles: ``,
 })
 export class ListaMarcas {
+  private marcasService = inject(MarcasService);
   private router = inject(Router);
 
-  marcas: Marca[] =
-    [
-      {
-        "Nombre": "Acindar",
-        "Productos": 10,
-      },
-      {
-        "Nombre": "Sinpar",
-        "Productos": 6,
-      },
-      {
-        "Nombre": "Conarco",
-        "Productos": 4,
-      },
-      {
-        "Nombre": "Genérico",
-        "Productos": 3,
-      },
+  protected marcas = signal<Marca[]>([]);
 
-    ];
+  ngOnInit() {
+    this.obtenerMarcas();
+  }
+
+  obtenerMarcas() {
+    this.marcasService.obtenerMarcas().subscribe(
+      (data) => {
+        this.marcas.set(data);
+      }
+    )
+  }
 
   nuevaMarca() {
     this.router.navigate(['/admin/form-marca']);
