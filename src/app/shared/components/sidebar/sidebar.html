@@ -14,4 +14,12 @@
         </a>
     </ng-template>
 
+    <ng-template #end>
+        <div class="px-5 py-4">
+            <p-button [label]="modoOscuro() ? 'Modo claro' : 'Modo oscuro'"
+                [icon]="modoOscuro() ? 'pi pi-sun' : 'pi pi-moon'"
+                severity="secondary" [text]="true" (onClick)="cambiarModo()" />
+        </div>
+    </ng-template>
+
 </p-menu>

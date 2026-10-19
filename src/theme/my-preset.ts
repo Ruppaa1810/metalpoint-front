@@ -34,19 +34,20 @@ const MyPreset = definePreset(Aura, {
                 }
             },
             dark: {
+                // Escala corregida: en modo oscuro PrimeNG usa los tonos 800-950 para los fondos
                 surface: {
-                    0: '#09090b', // Ajustado a tono oscuro profundo
-                    50: '{violet.950}',
-                    100: '{violet.900}',
-                    200: '{violet.800}',
-                    300: '{violet.700}',
-                    400: '{violet.600}',
-                    500: '{violet.500}',
-                    600: '{violet.400}',
-                    700: '{violet.300}',
-                    800: '{violet.200}',
-                    900: '{violet.100}',
-                    950: '{violet.50}'
+                    0: '#ffffff',
+                    50: '{zinc.50}',
+                    100: '{zinc.100}',
+                    200: '{zinc.200}',
+                    300: '{zinc.300}',
+                    400: '{zinc.400}',
+                    500: '{zinc.500}',
+                    600: '{zinc.600}',
+                    700: '{zinc.700}',
+                    800: '{zinc.800}',
+                    900: '{zinc.900}',
+                    950: '{zinc.950}'
                 }
             }
         }

@@ -1,8 +1,8 @@
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
     <div>
-        <h1 class="text-3xl font-bold text-slate-900">{{ titulo() }}</h1>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-surface-0">{{ titulo() }}</h1>
         @if (descripcion()) {
-        <p class="text-slate-600">{{ descripcion() }}</p>
+        <p class="text-slate-600 dark:text-surface-300">{{ descripcion() }}</p>
         }
     </div>
     @if (textoBoton()) {

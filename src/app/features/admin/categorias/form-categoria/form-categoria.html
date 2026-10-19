@@ -3,8 +3,8 @@
 
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">Crear nueva categoria</h1>
-                <p class="text-slate-600">Agrega nuevas categorias de productos al inventario</p>
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-surface-0">Crear nueva categoria</h1>
+                <p class="text-slate-600 dark:text-surface-300">Agrega nuevas categorias de productos al inventario</p>
             </div>
             <div class="flex gap-4">
                 <p-button label="Cancelar" [raised]="true" severity="secondary"
@@ -17,7 +17,7 @@
         <form [formGroup]="formCategoria">
 
             <div class="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
-                <section class="col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <section class="col-span-2 bg-white dark:bg-surface-900 p-6 rounded-xl border border-slate-200 dark:border-surface-700 shadow-sm">
                     <h3 class="text-lg font-bold mb-4">
                         <span class="pi pi-info-circle text-blue-600 mr-1"></span>
                         Información General
@@ -25,7 +25,7 @@
 
                     <div class="grid grid-col-1 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-1">Nombre de la Categoria</label>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Nombre de la Categoria</label>
                             <input pInputText id="over_label" autocomplete="off" class="w-full" formControlName="nombre"
                                 [invalid]="formCategoria.get('nombre')?.invalid && formCategoria.get('nombre')?.touched">
 
@@ -36,7 +36,7 @@
                     </div>
                 </section>
 
-                <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <section class="bg-white dark:bg-surface-900 p-6 rounded-xl border border-slate-200 dark:border-surface-700 shadow-sm">
                     <h3 class="text-lg font-bold mb-4">
                         <span class="pi pi-sitemap text-blue-600 mr-1"></span>
                         Organización
@@ -44,7 +44,7 @@
 
                     <div class="grid lg:grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-1">Categoria Padre</label>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Categoria Padre</label>
                             <p-select [options]="categoriasPadre()" optionLabel="nombre" optionValue="id"
                                 placeholder="Selecciona un categoria" class="w-full" appendTo="body"
                                 formControlName="categoria_padre_id" [showClear]="true" />

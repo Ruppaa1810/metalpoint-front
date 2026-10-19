@@ -2,6 +2,16 @@
 @import "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
 
+/* Las clases dark: de Tailwind se activan con la misma clase que usa PrimeNG */
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
 html {
   color-scheme: light;
+  background-color: var(--p-surface-50);
+}
+
+html.app-dark {
+  color-scheme: dark;
+  background-color: var(--p-surface-950);
+  color: var(--p-text-color);
 }
