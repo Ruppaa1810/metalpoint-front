@@ -32,7 +32,13 @@ export class ListaMarcas {
     )
   }
 
+  editarMarca(marca: Marca) {
+    this.marcasService.setMarcaEditar(marca);
+    this.router.navigate(['/admin/form-marca']);
+  }
+
   nuevaMarca() {
+    this.marcasService.setMarcaEditar(null);
     this.router.navigate(['/admin/form-marca']);
   }
 }
