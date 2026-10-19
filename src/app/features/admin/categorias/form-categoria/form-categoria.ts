@@ -8,6 +8,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { CategoriasService } from '../categorias.service';
 import { Categoria } from '../../../../core/models/categoria.model';
 import { MessageService } from 'primeng/api';
@@ -56,27 +57,48 @@ export class FormCategoria {
   }
 
   guardarCategoria() {
-    if (!this.formCategoria.invalid) {
-      let categoria: Categoria = {
-        nombre: this.formCategoria.value.nombre!,
-        categoria_padre_id: this.formCategoria.value.categoria_padre_id ? Number(this.formCategoria.value.categoria_padre_id) : null
-      }
-
-      if (this.categoriaService.categoria_editar() == null) {
-        this.categoriaService.guardarCategoria(categoria).subscribe(
-          (data) => {
-            this.toastService.add({ severity: 'success', summary: data.message });
-            this.finalizarGuardado();
-          }
-        )
-      } else {
-        this.categoriaService.actualizarCategoria(categoria, this.categoriaService.categoria_editar()?.id!).subscribe(
-          (data) => {
-            this.toastService.add({ severity: 'success', summary: data.message });
-          }
-        )
-      }
+    if (this.formCategoria.invalid) {
+      // Marca los campos como tocados para que se vean los mensajes de error
+      this.formCategoria.markAllAsTouched();
+      return;
     }
+
+    let categoria: Categoria = {
+      nombre: this.formCategoria.value.nombre!,
+      categoria_padre_id: this.formCategoria.value.categoria_padre_id ? Number(this.formCategoria.value.categoria_padre_id) : null
+    }
+
+    if (this.categoriaService.categoria_editar() == null) {
+      this.categoriaService.guardarCategoria(categoria).subscribe({
+        next: (data) => {
+          this.toastService.add({ severity: 'success', summary: data.message });
+          this.finalizarGuardado();
+        },
+        error: (e) => this.mostrarError(e)
+      })
+    } else {
+      this.categoriaService.actualizarCategoria(categoria, this.categoriaService.categoria_editar()?.id!).subscribe({
+        next: (data) => {
+          this.toastService.add({ severity: 'success', summary: data.message });
+          this.finalizarGuardado();
+        },
+        error: (e) => this.mostrarError(e)
+      })
+    }
+  }
+
+  mostrarError(e: HttpErrorResponse) {
+    let mensaje = 'Ocurrió un error al guardar la categoría';
+
+    if (e.status === 0) {
+      mensaje = 'No se pudo conectar con el servidor';
+    } else if (e.status === 422 && e.error?.errors?.nombre?.[0] === 'validation.unique') {
+      mensaje = 'Ya existe una categoría con ese nombre';
+    } else if (e.status === 422) {
+      mensaje = 'Los datos enviados no son válidos';
+    }
+
+    this.toastService.add({ severity: 'error', summary: 'Error', detail: mensaje });
   }
 
   finalizarGuardado() {

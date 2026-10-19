@@ -30,11 +30,14 @@ export class ListaCategorias {
   }
 
   obtenerCategorias() {
-    this.categoriasService.obtenerCategorias().subscribe(
-      (data) => {
+    this.categoriasService.obtenerCategorias().subscribe({
+      next: (data) => {
         this.categorias.set(data);
+      },
+      error: () => {
+        this.toastService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las categorías' });
       }
-    )
+    })
   }
 
   editarCategoria(categoria: Categoria) {
@@ -53,12 +56,15 @@ export class ListaCategorias {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.categoriasService.eliminarCategoria(categoria_id).subscribe(
-          (data) => {
+        this.categoriasService.eliminarCategoria(categoria_id).subscribe({
+          next: () => {
             this.obtenerCategorias();
             this.toastService.add({ severity: 'success', summary: 'Categoria eliminada' });
+          },
+          error: () => {
+            this.toastService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la categoría' });
           }
-        )
+        })
       }
     });
   }
