@@ -57,7 +57,13 @@ export class ListaProductos {
     }
   }
 
+  editarProducto(producto: Producto) {
+    this.productosService.setProductoEditar(producto);
+    this.router.navigate(['/admin/form-producto']);
+  }
+
   nuevoProducto() {
+    this.productosService.setProductoEditar(null);
     this.router.navigate(['/admin/form-producto']);
   }
 }

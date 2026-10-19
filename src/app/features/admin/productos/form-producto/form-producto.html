@@ -8,74 +8,111 @@
             </div>
             <div class="flex gap-4">
                 <p-button label="Cancelar" [raised]="true" severity="secondary" [routerLink]="['/admin/lista-productos']" />
-                <p-button label="Guardar Producto" [raised]="true" severity="primary" icon="pi pi-save" />
+                <p-button label="Guardar Producto" [raised]="true" severity="primary" icon="pi pi-save"
+                    (onClick)="guardarProducto()" />
             </div>
         </div>
 
-        <div class="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
-            <section class="col-span-2 bg-white dark:bg-surface-900 p-6 rounded-xl border border-slate-200 dark:border-surface-700 shadow-sm">
-                <h3 class="text-lg font-bold mb-4">
-                    <span class="pi pi-info-circle text-blue-600 mr-1"></span>
-                    Información General
-                </h3>
+        <form [formGroup]="formProducto">
 
-                <div class="grid grid-col-1 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Nombre del producto</label>
-                        <input pInputText autocomplete="off" class="w-full"
-                            placeholder="e.g. Caño Estructural 40x40" />
-                    </div>
+            <div class="grid lg:grid-cols-3 sm:grid-cols-1 gap-4">
+                <section class="col-span-2 bg-white dark:bg-surface-900 p-6 rounded-xl border border-slate-200 dark:border-surface-700 shadow-sm">
+                    <h3 class="text-lg font-bold mb-4">
+                        <span class="pi pi-info-circle text-blue-600 mr-1"></span>
+                        Información General
+                    </h3>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Marca</label>
-                        <p-select [options]="marcas" optionLabel="name" placeholder="Selecciona una marca"
-                            class="w-full" appendTo="body" />
-                    </div>
+                    <div class="grid grid-col-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Nombre del producto</label>
+                            <input pInputText autocomplete="off" class="w-full" formControlName="nombre"
+                                placeholder="e.g. Caño Estructural 40x40"
+                                [invalid]="formProducto.get('nombre')?.invalid && formProducto.get('nombre')?.touched" />
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Categoria</label>
-                        <p-select [options]="categorias" optionLabel="name" placeholder="Selecciona un categoria"
-                            class="w-full" appendTo="body" />
-                    </div>
+                            @if(formProducto.get('nombre')?.invalid && formProducto.get('nombre')?.touched){
+                            <small class="text-xs text-red-600">Nombre requerido de mínimo 3 caracteres</small>
+                            }
+                        </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Imagen (URL)</label>
-                        <input pInputText autocomplete="off" class="w-full"
-                            placeholder="e.g. https://direcciónDeImágen" />
-                    </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Marca</label>
+                            <p-select [options]="marcas()" optionLabel="nombre" optionValue="id"
+                                placeholder="Selecciona una marca" class="w-full" appendTo="body"
+                                formControlName="marca_id" [filter]="true" filterBy="nombre"
+                                [invalid]="formProducto.get('marca_id')?.invalid && formProducto.get('marca_id')?.touched" />
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Descripción</label>
-                        <textarea rows="5" cols="30" pTextarea fluid></textarea>
-                    </div>
-                </div>
-            </section>
+                            @if(formProducto.get('marca_id')?.invalid && formProducto.get('marca_id')?.touched){
+                            <small class="text-xs text-red-600">Elegí una marca</small>
+                            }
+                        </div>
 
-            <section class="bg-white dark:bg-surface-900 p-6 rounded-xl border border-slate-200 dark:border-surface-700 shadow-sm">
-                <h3 class="text-lg font-bold mb-4">
-                    <span class="pi pi-money-bill text-green-600 mr-1"></span>
-                    Precio e Inventario
-                </h3>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Categoria</label>
+                            <p-select [options]="categorias()" optionLabel="nombre" optionValue="id"
+                                placeholder="Selecciona un categoria" class="w-full" appendTo="body"
+                                formControlName="categoria_id" [filter]="true" filterBy="nombre"
+                                [invalid]="formProducto.get('categoria_id')?.invalid && formProducto.get('categoria_id')?.touched" />
 
-                <div class="grid lg:grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Precio de Venta ($)</label>
-                        <p-icon-field>
-                            <p-inputicon class="pi pi-dollar" />
-                            <input pInputText autocomplete="off" class="w-full" placeholder="0.00" />
-                        </p-icon-field>
+                            @if(formProducto.get('categoria_id')?.invalid && formProducto.get('categoria_id')?.touched){
+                            <small class="text-xs text-red-600">Elegí una categoría</small>
+                            }
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Imagen (URL)</label>
+                            <input pInputText autocomplete="off" class="w-full" formControlName="imagen_url"
+                                placeholder="e.g. https://direcciónDeImágen" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Descripción</label>
+                            <textarea rows="5" cols="30" pTextarea fluid formControlName="descripcion"></textarea>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Unidad de medida</label>
-                        <p-select [options]="unidades" optionLabel="name" placeholder="Selecciona una unidad"
-                            class="w-full" appendTo="body" />
+                </section>
+
+                <section class="bg-white dark:bg-surface-900 p-6 rounded-xl border border-slate-200 dark:border-surface-700 shadow-sm">
+                    <h3 class="text-lg font-bold mb-4">
+                        <span class="pi pi-money-bill text-green-600 mr-1"></span>
+                        Precio e Inventario
+                    </h3>
+
+                    <div class="grid lg:grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Precio de Venta ($)</label>
+                            <p-icon-field>
+                                <p-inputicon class="pi pi-dollar" />
+                                <input pInputText type="number" autocomplete="off" class="w-full" placeholder="0.00"
+                                    formControlName="precio"
+                                    [invalid]="formProducto.get('precio')?.invalid && formProducto.get('precio')?.touched" />
+                            </p-icon-field>
+
+                            @if(formProducto.get('precio')?.invalid && formProducto.get('precio')?.touched){
+                            <small class="text-xs text-red-600">Precio requerido (0 o más)</small>
+                            }
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Unidad de medida</label>
+                            <p-select [options]="unidades" optionLabel="name" optionValue="id"
+                                placeholder="Selecciona una unidad" class="w-full" appendTo="body"
+                                formControlName="unidad_medida" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Stock Disponible</label>
+                            <input pInputText type="number" autocomplete="off" class="w-full" placeholder="0"
+                                formControlName="stock"
+                                [invalid]="formProducto.get('stock')?.invalid && formProducto.get('stock')?.touched" />
+
+                            @if(formProducto.get('stock')?.invalid && formProducto.get('stock')?.touched){
+                            <small class="text-xs text-red-600">Stock requerido (0 o más)</small>
+                            }
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Stock Disponible</label>
-                        <input pInputText autocomplete="off" class="w-full" placeholder="0" />
-                    </div>
-                </div>
-            </section>
-        </div>
+                </section>
+            </div>
+        </form>
     </div>
 </div>
+
+<pre>Formulario es Invalido: {{formProducto.invalid | json}}</pre>
+<pre>{{formProducto.value | json}}</pre>
