@@ -7,7 +7,6 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { ProductosService } from '../productos.service';
@@ -20,7 +19,7 @@ import { Marca } from '../../../../core/models/marca.model';
 @Component({
   selector: 'app-form-producto',
   imports: [Button, InputTextModule, TextareaModule, Select, IconFieldModule, InputIconModule, RouterLink,
-    ReactiveFormsModule, JsonPipe
+    ReactiveFormsModule
   ],
   templateUrl: './form-producto.html',
   styles: ``,
@@ -44,18 +43,23 @@ export class FormProducto {
     { id: 'm2', name: 'Por m²' },
   ];
 
+  // true si se está editando, false si se está creando
+  protected editando = signal<boolean>(false);
+
   formProducto = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
     marca_id: [null as number | null, [Validators.required]],
     categoria_id: [null as number | null, [Validators.required]],
     imagen_url: [''],
     descripcion: [''],
-    precio: [null as number | null, [Validators.required, Validators.min(0)]],
+    precio: [null as number | null, [Validators.required, Validators.min(0.01)]],
     unidad_medida: ['unidad', [Validators.required]],
     stock: [null as number | null, [Validators.required, Validators.min(0)]],
   });
 
   ngOnInit() {
+    this.editando.set(this.productoService.producto_editar() != null);
+
     this.obtenerCategorias();
     this.obtenerMarcas();
 

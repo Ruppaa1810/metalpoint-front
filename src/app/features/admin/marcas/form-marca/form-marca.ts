@@ -1,9 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Button } from "primeng/button";
 import { InputTextModule } from 'primeng/inputtext';
 import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MarcasService } from '../marcas.service';
 import { Marca } from '../../../../core/models/marca.model';
@@ -11,7 +10,7 @@ import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-form-marca',
-  imports: [Button, InputTextModule, RouterLink, ReactiveFormsModule, JsonPipe],
+  imports: [Button, InputTextModule, RouterLink, ReactiveFormsModule],
   templateUrl: './form-marca.html',
   styles: ``,
 })
@@ -21,11 +20,16 @@ export class FormMarca {
   private router = inject(Router);
   private toastService = inject(MessageService);
 
+  // true si se está editando, false si se está creando
+  protected editando = signal<boolean>(false);
+
   formMarca = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
   });
 
   ngOnInit() {
+    this.editando.set(this.marcaService.marca_editar() != null);
+
     if (this.marcaService.marca_editar() != null) {
       this.formMarca.patchValue({
         nombre: this.marcaService.marca_editar()?.nombre

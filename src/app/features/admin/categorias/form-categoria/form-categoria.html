@@ -3,8 +3,13 @@
 
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
             <div>
+                @if (editando()) {
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-surface-0">Editar categoria</h1>
+                <p class="text-slate-600 dark:text-surface-300">Modifica los datos de la categoria seleccionada</p>
+                } @else {
                 <h1 class="text-3xl font-bold text-slate-900 dark:text-surface-0">Crear nueva categoria</h1>
                 <p class="text-slate-600 dark:text-surface-300">Agrega nuevas categorias de productos al inventario</p>
+                }
             </div>
             <div class="flex gap-4">
                 <p-button label="Cancelar" [raised]="true" severity="secondary"
@@ -55,6 +60,3 @@
         </form>
     </div>
 </div>
-
-<pre>Formulario es Invalido: {{formCategoria.get('nombre')?.invalid | json}}</pre>
-<pre>{{formCategoria.value | json}}</pre>

@@ -7,7 +7,6 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CategoriasService } from '../categorias.service';
 import { Categoria } from '../../../../core/models/categoria.model';
@@ -16,7 +15,7 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-form-categoria',
   imports: [Button, InputTextModule, TextareaModule, Select, IconFieldModule, InputIconModule, RouterLink,
-    ReactiveFormsModule, JsonPipe
+    ReactiveFormsModule
   ],
   templateUrl: './form-categoria.html',
   styles: ``,
@@ -29,12 +28,17 @@ export class FormCategoria {
 
   protected categoriasPadre = signal<Categoria[]>([]);
 
+  // true si se está editando, false si se está creando
+  protected editando = signal<boolean>(false);
+
   formCategoria = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
     categoria_padre_id: [null as number | null],
   });
 
   ngOnInit() {
+    this.editando.set(this.categoriaService.categoria_editar() != null);
+
     this.obtenerCategoriasPadre();
 
     if (this.categoriaService.categoria_editar() != null) {
