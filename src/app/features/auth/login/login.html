@@ -16,7 +16,7 @@
                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-surface-300">
                     Correo Electrónico
                 </label>
-                <input type="email" formControlName="email" pInputText placeholder="ejemplo@correo.com" class="w-full" />
+                <input type="email" formControlName="email" pInputText placeholder="ejemplo@correo.com" fluid />
             </div>
 
             <!-- Password Field -->
@@ -25,11 +25,12 @@
                     Contraseña
                 </label>
                 <p-password formControlName="password" name="password" placeholder="••••••••"
-                    [toggleMask]="true" [feedback]="false" inputStyleClass="w-full" styleClass="w-full" />
+                    [toggleMask]="true" [feedback]="false" fluid />
             </div>
 
             <!-- Login Button -->
-            <button pButton pRipple type="submit" label="Ingresar" class="w-full py-3 text-base font-semibold">
+            <button pButton pRipple type="submit" label="Ingresar" class="w-full py-3 text-base font-semibold"
+                (click)="login()" [loading]="isLoading()">
             </button>
 
             <!-- Register Link -->
