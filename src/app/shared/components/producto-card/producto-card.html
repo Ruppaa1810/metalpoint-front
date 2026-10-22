@@ -1,0 +1,33 @@
+<div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full border border-slate-200">
+  <div class="relative aspect-square overflow-hidden bg-slate-100">
+    @if (producto().imagen_url && !imagenFallida()) {
+      <img [src]="producto().imagen_url" [alt]="producto().nombre" loading="lazy"
+           class="w-full h-full object-cover hover:scale-105 transition-transform" (error)="imagenFallida.set(true)">
+    } @else {
+      <div class="w-full h-full flex items-center justify-center text-slate-300">
+        <i class="pi pi-image text-5xl"></i>
+      </div>
+    }
+
+    @if (producto().stock === 0) {
+      <span class="absolute top-2 left-2 bg-slate-900/80 text-white text-xs font-semibold px-2 py-1 rounded-md">Sin stock</span>
+    } @else if (producto().stock <= 5) {
+      <span class="absolute top-2 left-2 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-md">Últimas {{ producto().stock }}</span>
+    }
+  </div>
+
+  <div class="p-4 flex flex-col gap-2 flex-1">
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-xs text-slate-500 uppercase tracking-wide truncate">{{ producto().marca?.nombre }}</span>
+      <p-tag [value]="'por ' + producto().unidad_medida" severity="secondary" [rounded]="true"></p-tag>
+    </div>
+
+    <span class="font-semibold text-slate-800 line-clamp-2">
+      {{ producto().nombre }}
+    </span>
+
+    <div class="mt-auto flex items-center justify-between pt-2">
+      <span class="text-lg font-bold text-slate-900">$ {{ producto().precio.toLocaleString('es-AR') }}</span>
+    </div>
+  </div>
+</div>
