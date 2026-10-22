@@ -6,8 +6,10 @@ import { FormMarca } from './features/admin/marcas/form-marca/form-marca';
 import { ListaProductos } from './features/admin/productos/lista-productos/lista-productos';
 import { FormProducto } from './features/admin/productos/form-producto/form-producto';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
+import { Login } from './features/auth/login/login';
 
 export const routes: Routes = [
+    { path: 'login', component: Login },
     {
         path: 'admin', component: AdminLayout,
         children: [
