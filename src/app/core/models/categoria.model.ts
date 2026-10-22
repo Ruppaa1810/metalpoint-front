@@ -4,4 +4,5 @@ export interface Categoria {
     categoria_padre_id?: number | null;
     categoria_padre?: Categoria | null;
     productos_count?: number;
+    subcategorias?: Categoria[];
 }
