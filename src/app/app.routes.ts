@@ -7,6 +7,8 @@ import { ListaProductos } from './features/admin/productos/lista-productos/lista
 import { FormProducto } from './features/admin/productos/form-producto/form-producto';
 import { AdminLayout } from './core/layouts/admin-layout/admin-layout';
 import { Login } from './features/auth/login/login';
+import { PublicLayout } from './core/layouts/public-layout/public-layout';
+import { Catalogo } from './features/catalogo/catalogo/catalogo';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -24,6 +26,12 @@ export const routes: Routes = [
         ]
     },
 
-    { path: '', pathMatch: 'full', redirectTo: 'admin' },
-    { path: '**', redirectTo: 'admin' }
+    {
+        path: '', component: PublicLayout,
+        children: [
+            { path: 'catalogo', component: Catalogo, title: 'Catalogo' },
+            { path: '', pathMatch: 'full', redirectTo: 'catalogo' }
+        ]
+    },
+    { path: '**', redirectTo: '' }
 ];
