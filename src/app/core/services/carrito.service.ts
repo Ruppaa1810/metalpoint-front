@@ -51,6 +51,24 @@ export class CarritoService {
     return null;
   }
 
+  cambiarCantidad(id: number, cantidad: number) {
+    this._items.update(items =>
+      items.map(item =>
+        item.producto.id === id
+          ? { ...item, cantidad: cantidad }
+          : item
+      )
+    );
+  }
+
+  eliminar(id: number) {
+    this._items.update(items => items.filter(item => item.producto.id !== id));
+  }
+
+  vaciar() {
+    this._items.set([]);
+  }
+
   cantidadDe(id: number): number {
     return this._items().find(item => item.producto.id === id)?.cantidad ?? 0;
   }

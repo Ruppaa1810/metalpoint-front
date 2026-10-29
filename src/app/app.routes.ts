@@ -10,6 +10,7 @@ import { Login } from './features/auth/login/login';
 import { PublicLayout } from './core/layouts/public-layout/public-layout';
 import { Catalogo } from './features/catalogo/catalogo/catalogo';
 import { ProductoDetalle } from './features/catalogo/producto-detalle/producto-detalle';
+import { Carrito } from './features/carrito/carrito/carrito';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -32,6 +33,7 @@ export const routes: Routes = [
         children: [
             { path: 'catalogo', component: Catalogo, title: 'Catalogo' },
             { path: 'producto/:id', component: ProductoDetalle, title: 'Producto' },
+            { path: 'carrito', component: Carrito, title: 'Carrito' },
             { path: '', pathMatch: 'full', redirectTo: 'catalogo' }
         ]
     },

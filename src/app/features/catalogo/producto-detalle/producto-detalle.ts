@@ -6,7 +6,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { finalize } from 'rxjs';
+import { MessageService } from 'primeng/api';
 import { CatalogoService } from '../catalogo.service';
+import { CarritoService } from '../../../core/services/carrito.service';
 import { Producto } from '../../../core/models/producto.model';
 
 @Component({
@@ -18,8 +20,12 @@ import { Producto } from '../../../core/models/producto.model';
 export class ProductoDetalle {
   private route = inject(ActivatedRoute);
   private catalogoService = inject(CatalogoService);
+  protected carritoService = inject(CarritoService);
+  private toastService = inject(MessageService);
 
   protected producto = signal<Producto | null>(null);
+  // Cantidad elegida para agregar al carrito
+  protected cantidad = signal<number>(1);
   protected cargando = signal<boolean>(false);
   protected huboError = signal<boolean>(false);
   protected imagenFallida = signal<boolean>(false);
@@ -48,5 +54,29 @@ export class ProductoDetalle {
         }
       }
     });
+  }
+
+  // Cuántas unidades se pueden agregar todavía (stock menos lo que ya está en el carrito)
+  disponible(p: Producto): number {
+    return p.stock - this.carritoService.cantidadDe(p.id!);
+  }
+
+  sumarCantidad() {
+    this.cantidad.update(valor => valor + 1);
+  }
+
+  restarCantidad() {
+    this.cantidad.update(valor => valor - 1);
+  }
+
+  agregarAlCarrito(p: Producto) {
+    const error = this.carritoService.agregar(p, this.cantidad());
+
+    if (error) {
+      this.toastService.add({ severity: 'warn', summary: error, life: 3000 });
+    } else {
+      this.toastService.add({ severity: 'success', summary: 'Producto añadido', detail: p.nombre, life: 3000 });
+      this.cantidad.set(1);
+    }
   }
 }

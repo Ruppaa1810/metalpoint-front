@@ -1,17 +1,10 @@
-<p-confirmdialog />
-
 <div class="max-w-5xl mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-    Carrito de compras
-    @if (actualizando()) {
-      <i class="pi pi-spin pi-spinner text-base text-slate-400" title="Actualizando precios"></i>
-    }
-  </h1>
+  <h1 class="text-3xl font-bold text-slate-900 mb-6">Carrito de compras</h1>
 
-  @if (items().length === 0) {
+  @if (carritoService.items().length === 0) {
     <div class="text-center py-20">
       <i class="pi pi-shopping-cart text-6xl text-slate-300 block mb-6"></i>
-      <h2 class="text-2xl font-bold text-slate-900 mb-2">Tu carrito está vacío</h2>
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Tu carrito está vacío. ¡Empieza a comprar!</h2>
       <p class="text-slate-500 mb-8">Explorá el catálogo y agregá los materiales que necesitás para tu obra o taller.</p>
       <a routerLink="/catalogo">
         <p-button label="Ir al catálogo" icon="pi pi-th-large"></p-button>
@@ -20,12 +13,11 @@
   } @else {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2 space-y-4">
-        @for (item of items(); track item.producto.id) {
+        @for (item of carritoService.items(); track item.producto.id) {
           <div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap sm:flex-nowrap items-center gap-4">
             <a [routerLink]="['/producto', item.producto.id]" class="shrink-0">
-              @if (item.producto.imagen_url && !imagenesFallidas().includes(item.producto.id)) {
-                <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="w-20 h-20 rounded-lg object-cover"
-                     (error)="marcarImagenFallida(item.producto.id)">
+              @if (item.producto.imagen_url) {
+                <img [src]="item.producto.imagen_url" [alt]="item.producto.nombre" class="w-20 h-20 rounded-lg object-cover">
               } @else {
                 <div class="w-20 h-20 rounded-lg bg-slate-100 flex items-center justify-center text-slate-300">
                   <i class="pi pi-image text-2xl"></i>
@@ -55,7 +47,7 @@
         }
 
         <div class="flex flex-wrap gap-3 justify-between">
-          <p-button label="Vaciar carrito" icon="pi pi-trash" severity="danger" [outlined]="true" (onClick)="vaciar($event)"></p-button>
+          <p-button label="Vaciar carrito" icon="pi pi-trash" severity="danger" [outlined]="true" (onClick)="vaciar()"></p-button>
           <a routerLink="/catalogo">
             <p-button label="Seguir comprando" icon="pi pi-arrow-left" severity="secondary" [outlined]="true"></p-button>
           </a>
@@ -70,7 +62,7 @@
           <div class="space-y-2 text-sm">
             <div class="flex justify-between text-slate-600">
               <span>Productos</span>
-              <span>{{ totalItems() }} {{ totalItems() === 1 ? 'unidad' : 'unidades' }}</span>
+              <span>{{ carritoService.cantidadTotal() }} {{ carritoService.cantidadTotal() === 1 ? 'unidad' : 'unidades' }}</span>
             </div>
             <div class="flex justify-between text-slate-600">
               <span>Envío</span>
@@ -82,11 +74,11 @@
 
           <div class="flex justify-between items-baseline mb-6">
             <span class="font-bold text-slate-900">Total</span>
-            <span class="text-2xl font-black text-slate-900">$ {{ totalPrecio().toLocaleString('es-AR') }}</span>
+            <span class="text-2xl font-black text-slate-900">$ {{ carritoService.total().toLocaleString('es-AR') }}</span>
           </div>
 
-          <p-button label="Finalizar compra" icon="pi pi-check-circle" class="w-full" styleClass="w-full" [disabled]="true"></p-button>
-          <p class="text-xs text-slate-400 mt-2 text-center">El checkout llega en la próxima etapa del proyecto.</p>
+          <p-button label="Continuar Compra" icon="pi pi-check-circle" class="w-full" styleClass="w-full" [disabled]="true"></p-button>
+          <p class="text-xs text-slate-400 mt-2 text-center">La confirmación de la compra llega con el módulo de pedidos.</p>
         </div>
       </div>
     </div>
