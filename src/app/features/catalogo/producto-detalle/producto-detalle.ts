@@ -45,7 +45,10 @@ export class ProductoDetalle {
       finalize(() => { this.cargando.set(false) })
     ).subscribe({
       next: (data) => {
-        this.producto.set(data);
+        // Un producto inactivo no se muestra en la tienda: queda como "no encontrado"
+        if (data.estado !== 'Inactivo') {
+          this.producto.set(data);
+        }
       },
       error: (e: HttpErrorResponse) => {
         // 404 = el producto no existe, se muestra "Producto no encontrado"

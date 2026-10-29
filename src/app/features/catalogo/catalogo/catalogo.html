@@ -83,9 +83,18 @@
         } @else {
           <div class="text-center py-20 text-slate-400">
             <i class="pi pi-search text-5xl block mb-4"></i>
-            <p class="font-semibold">No encontramos productos con esos filtros</p>
-            <p class="text-sm mt-1 mb-4">Probá con otra búsqueda o sacá algún filtro.</p>
-            <p-button label="Limpiar filtros" icon="pi pi-filter-slash" severity="secondary" [outlined]="true" (onClick)="limpiarFiltros()"></p-button>
+            <!-- Mensajes de la documentación de Notion -->
+            @if (formFiltros.value.busqueda) {
+              <p class="font-semibold">No encontramos productos que coincidan con '{{ formFiltros.value.busqueda }}'</p>
+            } @else if (hayFiltros()) {
+              <p class="font-semibold">No se encontraron Productos</p>
+            } @else {
+              <p class="font-semibold">Disculpa, no hay productos disponibles por el momento.</p>
+            }
+            @if (hayFiltros()) {
+              <p class="text-sm mt-1 mb-4">Probá con otra búsqueda o sacá algún filtro.</p>
+              <p-button label="Limpiar filtros" icon="pi pi-filter-slash" severity="secondary" [outlined]="true" (onClick)="limpiarFiltros()"></p-button>
+            }
           </div>
         }
       </section>

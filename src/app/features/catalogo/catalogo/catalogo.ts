@@ -92,6 +92,8 @@ export class Catalogo {
       precio_min: filtros.precio_min,
       precio_max: filtros.precio_max,
       orden: filtros.orden,
+      // La tienda solo muestra productos activos y con stock (Notion)
+      solo_disponibles: 1,
     }).pipe(
       finalize(() => { this.cargando.set(false) })
     ).subscribe({
@@ -123,6 +125,11 @@ export class Catalogo {
 
   limpiarFiltros() {
     this.formFiltros.reset();
+  }
+
+  // true si hay algún filtro o búsqueda cargada (para elegir el mensaje cuando no hay resultados)
+  hayFiltros(): boolean {
+    return Object.values(this.formFiltros.value).some(valor => valor != null && valor !== '');
   }
 
   /**
