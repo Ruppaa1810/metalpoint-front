@@ -5,14 +5,18 @@ import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
 import MyPreset from '../theme/my-preset';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    // El interceptor también muestra toasts, por eso el MessageService va acá y no en app.ts
+    MessageService,
 
     provideAnimationsAsync(),
     providePrimeNG({

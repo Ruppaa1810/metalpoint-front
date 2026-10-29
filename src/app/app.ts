@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ConfirmDialogModule, ToastModule],
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
   standalone: true,
   templateUrl: './app.html',
   styleUrl: './app.css'
