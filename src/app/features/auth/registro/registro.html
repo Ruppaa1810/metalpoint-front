@@ -1,0 +1,54 @@
+<div class="min-h-screen flex items-center justify-center bg-slate-100 px-4">
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 w-full max-w-md p-8">
+    <div class="text-center mb-8">
+      <a routerLink="/" class="inline-flex items-center gap-2 text-2xl font-bold text-slate-900">
+        <i class="pi pi-wrench text-amber-500"></i>
+        Metal<span class="text-amber-500">Point</span>
+      </a>
+      <p class="text-slate-500 text-sm mt-2">Creá tu cuenta para empezar</p>
+    </div>
+
+    <form [formGroup]="formRegistro" (ngSubmit)="registrar()" class="space-y-5">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
+        <input pInputText formControlName="name" placeholder="Tu nombre" fluid />
+        @if (formRegistro.get('name')?.invalid && formRegistro.get('name')?.touched) {
+          <small class="text-red-500">El nombre es obligatorio (mínimo 3 caracteres).</small>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+        <input pInputText formControlName="email" type="email" placeholder="tu@email.com" fluid />
+        @if (formRegistro.get('email')?.invalid && formRegistro.get('email')?.touched) {
+          <small class="text-red-500">Ingresá un email válido.</small>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
+        <!-- [feedback] muestra el medidor de fortaleza de la contraseña (Clase 5) -->
+        <p-password formControlName="password" [toggleMask]="true" placeholder="Mínimo 8 caracteres" fluid
+          promptLabel="Ingresá una contraseña" weakLabel="Débil" mediumLabel="Media" strongLabel="Fuerte" />
+        @if (formRegistro.get('password')?.invalid && formRegistro.get('password')?.touched) {
+          <small class="text-red-500">Mínimo 8 caracteres.</small>
+        }
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Repetir contraseña</label>
+        <p-password formControlName="password_confirmation" [feedback]="false" [toggleMask]="true" placeholder="Repetí tu contraseña" fluid />
+        @if (formRegistro.errors?.['passwordMismatch'] && formRegistro.get('password_confirmation')?.touched) {
+          <small class="text-red-500">Las contraseñas no coinciden.</small>
+        }
+      </div>
+
+      <p-button label="Crear Cuenta" icon="pi pi-user-plus" type="submit" [loading]="isLoading()" styleClass="w-full" class="w-full" />
+
+      <p class="text-center text-sm text-slate-500">
+        ¿Ya tenés cuenta?
+        <a routerLink="/login" class="text-amber-600 hover:underline font-semibold">Iniciá sesión</a>
+      </p>
+    </form>
+  </div>
+</div>

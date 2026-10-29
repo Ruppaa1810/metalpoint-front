@@ -37,6 +37,15 @@ export class AuthService {
     }));
   }
 
+  register(name: string, email: string, password: string) {
+    // La API le asigna el rol Cliente al usuario nuevo
+    return this.httpClient.post<any>(`${this.apiURL}register`, {
+      name,
+      email,
+      password,
+    });
+  }
+
   logout() {
     return this.httpClient.post<any>(`${this.apiURL}logout`, {});
   }

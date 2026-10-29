@@ -7,13 +7,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   imports: [InputTextModule, PasswordModule, ButtonModule, CardModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styles: ``,
 })
