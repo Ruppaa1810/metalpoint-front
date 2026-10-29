@@ -14,6 +14,8 @@ import { Producto } from '../../../core/models/producto.model';
 import { Categoria } from '../../../core/models/categoria.model';
 import { Marca } from '../../../core/models/marca.model';
 import { ProductoCard } from '../../../shared/components/producto-card/producto-card';
+import { CarritoService } from '../../../core/services/carrito.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-catalogo',
@@ -27,6 +29,8 @@ export class Catalogo {
   private catalogoService = inject(CatalogoService);
   private categoriasService = inject(CategoriasService);
   private marcasService = inject(MarcasService);
+  private carritoService = inject(CarritoService);
+  private toastService = inject(MessageService);
 
   protected productos = signal<Producto[]>([]);
   protected cargando = signal<boolean>(false);
@@ -119,5 +123,19 @@ export class Catalogo {
 
   limpiarFiltros() {
     this.formFiltros.reset();
+  }
+
+  /**
+   * Método que se ejecuta cuando el hijo (ProductoCard) emite el evento agregarCarrito
+   * @param producto - El producto que el usuario quiere agregar al carrito
+   */
+  sumarAlCarrito(producto: Producto) {
+    const error = this.carritoService.agregar(producto);
+
+    if (error) {
+      this.toastService.add({ severity: 'warn', summary: error, life: 3000 });
+    } else {
+      this.toastService.add({ severity: 'success', summary: 'Producto añadido', detail: producto.nombre, life: 3000 });
+    }
   }
 }

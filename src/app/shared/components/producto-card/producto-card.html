@@ -28,6 +28,11 @@
 
     <div class="mt-auto flex items-center justify-between pt-2">
       <span class="text-lg font-bold text-slate-900">$ {{ producto().precio.toLocaleString('es-AR') }}</span>
+      @if (producto().stock > 0) {
+        <p-button label="Agregar" icon="pi pi-cart-plus" (onClick)="agregarAlCarrito()"></p-button>
+      } @else {
+        <p-button label="Agotado" severity="secondary" [disabled]="true"></p-button>
+      }
     </div>
   </div>
 </div>

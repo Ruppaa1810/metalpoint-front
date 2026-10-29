@@ -18,6 +18,13 @@
           }
         </nav>
 
+        <a routerLink="/carrito" class="relative p-2 rounded-md hover:bg-slate-800 transition-colors" title="Carrito">
+          <i class="pi pi-shopping-cart text-lg"></i>
+          @if (carritoService.cantidadTotal() > 0) {
+            <p-badge [value]="carritoService.cantidadTotal()" severity="danger" class="absolute -top-1 -right-1"></p-badge>
+          }
+        </a>
+
         @if (nombreUsuario()) {
           <span class="flex items-center gap-2 text-sm">
             <i class="pi pi-user"></i>{{ nombreUsuario() }}

@@ -77,7 +77,7 @@
           </p>
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity" [class.opacity-50]="cargando()">
             @for (producto of productos(); track producto.id) {
-              <app-producto-card [producto]="producto" />
+              <app-producto-card [producto]="producto" (agregarCarrito)="sumarAlCarrito($event)" />
             }
           </div>
         } @else {
