@@ -1,10 +1,11 @@
 import { Component, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 import { Producto } from '../../../core/models/producto.model';
 
 @Component({
   selector: 'app-producto-card',
-  imports: [TagModule],
+  imports: [TagModule, RouterLink],
   templateUrl: './producto-card.html',
   styles: ``,
 })

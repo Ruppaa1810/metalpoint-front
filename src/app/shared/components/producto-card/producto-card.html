@@ -1,5 +1,5 @@
 <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full border border-slate-200">
-  <div class="relative aspect-square overflow-hidden bg-slate-100">
+  <a [routerLink]="['/producto', producto().id]" class="relative aspect-square overflow-hidden bg-slate-100">
     @if (producto().imagen_url && !imagenFallida()) {
       <img [src]="producto().imagen_url" [alt]="producto().nombre" loading="lazy"
            class="w-full h-full object-cover hover:scale-105 transition-transform" (error)="imagenFallida.set(true)">
@@ -14,7 +14,7 @@
     } @else if (producto().stock <= 5) {
       <span class="absolute top-2 left-2 bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-md">Últimas {{ producto().stock }}</span>
     }
-  </div>
+  </a>
 
   <div class="p-4 flex flex-col gap-2 flex-1">
     <div class="flex items-center justify-between gap-2">
@@ -22,9 +22,9 @@
       <p-tag [value]="'por ' + producto().unidad_medida" severity="secondary" [rounded]="true"></p-tag>
     </div>
 
-    <span class="font-semibold text-slate-800 line-clamp-2">
+    <a [routerLink]="['/producto', producto().id]" class="font-semibold text-slate-800 line-clamp-2 hover:text-amber-600">
       {{ producto().nombre }}
-    </span>
+    </a>
 
     <div class="mt-auto flex items-center justify-between pt-2">
       <span class="text-lg font-bold text-slate-900">$ {{ producto().precio.toLocaleString('es-AR') }}</span>

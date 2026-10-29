@@ -23,4 +23,8 @@ export class CatalogoService {
 
     return this.httpClient.get<any>(this.apiURL, { params });
   }
+
+  obtenerProducto(id: number) {
+    return this.httpClient.get<any>(`${this.apiURL}/${id}`);
+  }
 }
