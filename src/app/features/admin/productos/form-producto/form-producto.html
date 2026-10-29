@@ -112,6 +112,12 @@
                             <small class="text-xs text-red-600">Stock requerido (0 o más)</small>
                             }
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 dark:text-surface-300 mb-1">Estado</label>
+                            <p-select [options]="estados" optionLabel="name" optionValue="id"
+                                class="w-full" appendTo="body" formControlName="estado" />
+                            <small class="text-xs text-gray-500">Los inactivos no se muestran en la tienda</small>
+                        </div>
                     </div>
                 </section>
             </div>

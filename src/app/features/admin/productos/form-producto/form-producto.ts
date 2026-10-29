@@ -43,6 +43,12 @@ export class FormProducto {
     { id: 'm2', name: 'Por m²' },
   ];
 
+  // Inactivo = no se muestra en la tienda (en vez de borrar el producto)
+  protected estados: any[] = [
+    { id: 'Activo', name: 'Activo' },
+    { id: 'Inactivo', name: 'Inactivo' },
+  ];
+
   // true si se está editando, false si se está creando
   protected editando = signal<boolean>(false);
 
@@ -55,6 +61,7 @@ export class FormProducto {
     precio: [null as number | null, [Validators.required, Validators.min(0.01)]],
     unidad_medida: ['unidad', [Validators.required]],
     stock: [null as number | null, [Validators.required, Validators.min(0)]],
+    estado: ['Activo', [Validators.required]],
   });
 
   ngOnInit() {
@@ -73,10 +80,11 @@ export class FormProducto {
         descripcion: producto?.descripcion,
         precio: producto?.precio,
         unidad_medida: producto?.unidad_medida,
-        stock: producto?.stock
+        stock: producto?.stock,
+        estado: producto?.estado
       })
     } else {
-      this.formProducto.reset({ unidad_medida: 'unidad' });
+      this.formProducto.reset({ unidad_medida: 'unidad', estado: 'Activo' });
     }
   }
 
@@ -111,7 +119,8 @@ export class FormProducto {
       descripcion: this.formProducto.value.descripcion || null,
       precio: Number(this.formProducto.value.precio),
       unidad_medida: this.formProducto.value.unidad_medida!,
-      stock: Number(this.formProducto.value.stock)
+      stock: Number(this.formProducto.value.stock),
+      estado: this.formProducto.value.estado as 'Activo' | 'Inactivo'
     }
 
     if (this.productoService.producto_editar() == null) {
@@ -148,7 +157,7 @@ export class FormProducto {
   }
 
   finalizarGuardado() {
-    this.formProducto.reset({ unidad_medida: 'unidad' });
+    this.formProducto.reset({ unidad_medida: 'unidad', estado: 'Activo' });
     this.router.navigate(['/admin/lista-productos']);
   }
 }

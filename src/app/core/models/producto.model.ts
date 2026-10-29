@@ -7,6 +7,7 @@ export interface Producto {
     descripcion?: string | null;
     precio: number;
     stock: number;
+    estado: 'Activo' | 'Inactivo';
     unidad_medida: string;
     categoria_id: number;
     marca_id: number;
