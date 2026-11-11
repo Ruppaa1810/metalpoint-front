@@ -19,6 +19,8 @@
             <p-button [label]="modoOscuro() ? 'Modo claro' : 'Modo oscuro'"
                 [icon]="modoOscuro() ? 'pi pi-sun' : 'pi pi-moon'"
                 severity="secondary" [text]="true" (onClick)="cambiarModo()" />
+            <p-button label="Cerrar sesión" icon="pi pi-sign-out"
+                severity="danger" [text]="true" (onClick)="cerrarSesion()" />
         </div>
     </ng-template>
 

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { tap } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 
 type Role = 'Administrador' | 'Cliente';
 
@@ -47,6 +47,13 @@ export class AuthService {
   }
 
   logout() {
-    return this.httpClient.post<any>(`${this.apiURL}logout`, {});
+    return this.httpClient.post<any>(`${this.apiURL}logout`, {}).pipe(
+      // Salga bien o mal el pedido, borro los datos de la sesión del navegador
+      finalize(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_data');
+        localStorage.removeItem('role');
+      })
+    );
   }
 }

@@ -29,6 +29,8 @@
           <span class="flex items-center gap-2 text-sm">
             <i class="pi pi-user"></i>{{ nombreUsuario() }}
           </span>
+          <p-button icon="pi pi-sign-out" severity="secondary" [text]="true" ariaLabel="Cerrar sesión"
+            title="Cerrar sesión" (onClick)="cerrarSesion()"></p-button>
         } @else {
           <a routerLink="/login">
             <p-button label="Ingresar" icon="pi pi-user"></p-button>

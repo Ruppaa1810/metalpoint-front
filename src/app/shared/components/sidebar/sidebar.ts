@@ -1,11 +1,12 @@
-import { Component, signal } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { Component, inject, signal } from '@angular/core';
+import { MenuItem, MessageService } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { BadgeModule } from 'primeng/badge';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { RouterLinkActive, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 
 @Component({
@@ -16,6 +17,10 @@ import { RouterLinkActive, RouterModule } from '@angular/router';
   styles: ``,
 })
 export class Sidebar {
+  private authService = inject(AuthService);
+  private toastService = inject(MessageService);
+  private router = inject(Router);
+
   menuItems: MenuItem[] | undefined;
 
   modoOscuro = signal<boolean>(false);
@@ -40,5 +45,17 @@ export class Sidebar {
 
     this.modoOscuro.set(html?.classList.contains('app-dark') ?? false);
     localStorage.setItem('modoOscuro', this.modoOscuro() ? 'si' : 'no');
+  }
+
+  cerrarSesion() {
+    this.authService.logout().subscribe({
+      next: () => this.sesionCerrada(),
+      error: () => this.sesionCerrada()
+    });
+  }
+
+  sesionCerrada() {
+    this.toastService.add({ severity: 'success', summary: 'Sesión cerrada correctamente', life: 3000 });
+    this.router.navigate(['/login']);
   }
 }
