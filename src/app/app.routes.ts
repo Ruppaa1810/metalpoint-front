@@ -12,12 +12,14 @@ import { PublicLayout } from './core/layouts/public-layout/public-layout';
 import { Catalogo } from './features/catalogo/catalogo/catalogo';
 import { ProductoDetalle } from './features/catalogo/producto-detalle/producto-detalle';
 import { Carrito } from './features/carrito/carrito/carrito';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
     { path: 'registro', component: Registro },
     {
         path: 'admin', component: AdminLayout,
+        canActivate: [adminGuard],     // solo Administrador
         children: [
             { path: 'lista-categorias', component: ListaCategorias, title: 'ListaCategorias' },
             { path: 'form-categoria', component: FormCategoria, title: 'FormCategoria' },

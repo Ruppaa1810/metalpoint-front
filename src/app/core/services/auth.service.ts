@@ -56,4 +56,13 @@ export class AuthService {
       })
     );
   }
+
+  // true si hay un token guardado (o sea, si inició sesión)
+  isAuthenticated(): boolean {
+    return localStorage.getItem('access_token') != null;
+  }
+
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
 }

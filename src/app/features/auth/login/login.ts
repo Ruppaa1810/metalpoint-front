@@ -50,7 +50,12 @@ export class Login {
           severity: 'success', summary: response.message,
           detail: `Se ha iniciado sesión como ${response.role}`, life: 5000
         });
-        this.router.navigate(['/admin/lista-categorias']);
+        // Según el rol: el Administrador va al panel y el Cliente a la tienda
+        if (response.role === 'Administrador') {
+          this.router.navigate(['/admin/lista-categorias']);
+        } else {
+          this.router.navigate(['/catalogo']);
+        }
       },
       error: (error: HttpErrorResponse) => {
         switch (error.status) {
