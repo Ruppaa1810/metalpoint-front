@@ -11,6 +11,11 @@
           <a routerLink="/catalogo" routerLinkActive="bg-slate-800" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
             Catálogo
           </a>
+          @if (nombreUsuario()) {
+            <a routerLink="/mis-pedidos" routerLinkActive="bg-slate-800" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
+              Mis pedidos
+            </a>
+          }
           @if (esAdmin()) {
             <a routerLink="/admin" class="hidden md:block px-3 py-2 rounded-md text-sm font-medium hover:bg-slate-800 transition-colors">
               <i class="pi pi-wrench mr-1"></i>Panel Admin

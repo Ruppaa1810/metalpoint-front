@@ -15,6 +15,7 @@ import { Carrito } from './features/carrito/carrito/carrito';
 import { adminGuard } from './core/guards/admin-guard';
 import { authGuard } from './core/guards/auth-guard';
 import { Checkout } from './features/carrito/checkout/checkout';
+import { MisPedidos } from './features/pedidos/mis-pedidos/mis-pedidos';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -41,6 +42,7 @@ export const routes: Routes = [
             { path: 'producto/:id', component: ProductoDetalle, title: 'Producto' },
             { path: 'carrito', component: Carrito, title: 'Carrito' },
             { path: 'checkout', component: Checkout, title: 'Checkout', canActivate: [authGuard] },  // hay que iniciar sesión
+            { path: 'mis-pedidos', component: MisPedidos, title: 'Mis pedidos', canActivate: [authGuard] },
             { path: '', pathMatch: 'full', redirectTo: 'catalogo' }
         ]
     },
