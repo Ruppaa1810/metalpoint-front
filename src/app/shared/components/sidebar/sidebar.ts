@@ -27,6 +27,7 @@ export class Sidebar {
 
   ngOnInit() {
     this.menuItems = [
+      { label: 'Dashboard', icon: 'pi pi-chart-bar', routerLink: '/admin/dashboard' },
       { label: 'Categorías', icon: 'pi pi-folder', routerLink: '/admin/lista-categorias' },
       { label: 'Marcas', icon: 'pi pi-tag', routerLink: '/admin/lista-marcas' },
       { label: 'Productos', icon: 'pi pi-box', routerLink: '/admin/lista-productos' },

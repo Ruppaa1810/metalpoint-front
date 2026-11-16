@@ -11,6 +11,7 @@ import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { debounceTime } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Pedido } from '../../../../core/models/pedido.model';
 import { PageHeader } from '../../../../shared/components/page-header/page-header';
@@ -28,6 +29,7 @@ export class ListaPedidos {
   private pedidosService = inject(PedidosService);
   private toastService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private route = inject(ActivatedRoute);
 
   protected pedidos = signal<Pedido[]>([]);
 
@@ -48,6 +50,12 @@ export class ListaPedidos {
   });
 
   ngOnInit() {
+    // Si viene del dashboard con ?estado=Pendiente, arranco con ese filtro puesto
+    const estado = this.route.snapshot.queryParamMap.get('estado');
+    if (estado) {
+      this.formFiltros.patchValue({ estado: estado });
+    }
+
     this.obtenerPedidos();
 
     // Cada vez que cambia un filtro vuelvo a pedir los pedidos (como en el catálogo)

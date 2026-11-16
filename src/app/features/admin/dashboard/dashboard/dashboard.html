@@ -1,0 +1,92 @@
+<div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+    <div class="max-w-7xl mx-auto flex flex-col gap-4">
+
+        <app-page-header titulo="Dashboard" descripcion="Resumen de la tienda" />
+
+        <!-- TARJETAS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            @if (resumen() == null) {
+                @for (i of [1, 2, 3, 4]; track i) {
+                    <p-card><p-skeleton height="64px" /></p-card>
+                }
+            } @else {
+                <p-card class="cursor-pointer" (click)="verPedidosPendientes()">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center">
+                            <i class="pi pi-shopping-bag text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-surface-0">{{ resumen().pedidos_pendientes }}</p>
+                            <p class="text-sm text-slate-500 dark:text-surface-400">Pedidos pendientes</p>
+                        </div>
+                    </div>
+                </p-card>
+
+                <p-card>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-red-100 text-red-600 flex items-center justify-center">
+                            <i class="pi pi-ban text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-surface-0">{{ resumen().productos_agotados }}</p>
+                            <p class="text-sm text-slate-500 dark:text-surface-400">Productos agotados</p>
+                        </div>
+                    </div>
+                </p-card>
+
+                <p-card>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                            <i class="pi pi-users text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-surface-0">{{ resumen().usuarios_nuevos }}</p>
+                            <p class="text-sm text-slate-500 dark:text-surface-400">Usuarios nuevos esta semana</p>
+                        </div>
+                    </div>
+                </p-card>
+
+                <p-card>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
+                            <i class="pi pi-exclamation-triangle text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-slate-900 dark:text-surface-0">{{ resumen().stock_bajo.length }}</p>
+                            <p class="text-sm text-slate-500 dark:text-surface-400">Productos con stock bajo</p>
+                        </div>
+                    </div>
+                </p-card>
+            }
+        </div>
+
+        <!-- ALERTA DE STOCK BAJO -->
+        @if (resumen() != null) {
+            <p-card header="Alerta de stock bajo">
+                @if (resumen().stock_bajo.length > 0) {
+                    <p-table [value]="resumen().stock_bajo">
+                        <ng-template #header>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Stock</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #body let-producto>
+                            <tr>
+                                <td class="font-medium">{{ producto.nombre }}</td>
+                                <td><p-tag [value]="'Quedan ' + producto.stock" severity="warn" /></td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                } @else {
+                    <p class="text-sm text-slate-500 dark:text-surface-400">No hay productos con stock bajo.</p>
+                }
+                <div class="mt-4">
+                    <a routerLink="/admin/lista-productos">
+                        <p-button label="Ir a productos" icon="pi pi-box" severity="secondary" [outlined]="true" />
+                    </a>
+                </div>
+            </p-card>
+        }
+    </div>
+</div>

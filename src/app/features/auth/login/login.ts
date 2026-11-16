@@ -52,7 +52,7 @@ export class Login {
         });
         // Según el rol: el Administrador va al panel y el Cliente a la tienda
         if (response.role === 'Administrador') {
-          this.router.navigate(['/admin/lista-categorias']);
+          this.router.navigate(['/admin/dashboard']);
         } else {
           this.router.navigate(['/catalogo']);
         }

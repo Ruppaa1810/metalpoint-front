@@ -17,6 +17,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { Checkout } from './features/carrito/checkout/checkout';
 import { MisPedidos } from './features/pedidos/mis-pedidos/mis-pedidos';
 import { ListaPedidos } from './features/admin/pedidos/lista-pedidos/lista-pedidos';
+import { Dashboard } from './features/admin/dashboard/dashboard/dashboard';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -25,6 +26,7 @@ export const routes: Routes = [
         path: 'admin', component: AdminLayout,
         canActivate: [adminGuard],     // solo Administrador
         children: [
+            { path: 'dashboard', component: Dashboard, title: 'Dashboard' },
             { path: 'lista-categorias', component: ListaCategorias, title: 'ListaCategorias' },
             { path: 'form-categoria', component: FormCategoria, title: 'FormCategoria' },
             { path: 'lista-marcas', component: ListaMarcas, title: 'ListaMarcas' },
@@ -32,8 +34,8 @@ export const routes: Routes = [
             { path: 'lista-productos', component: ListaProductos, title: 'ListaProductos' },
             { path: 'form-producto', component: FormProducto, title: 'FormProducto' },
             { path: 'lista-pedidos', component: ListaPedidos, title: 'ListaPedidos' },
-            { path: '', pathMatch: 'full', redirectTo: 'lista-categorias' },
-            { path: '**', redirectTo: 'lista-categorias'}
+            { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+            { path: '**', redirectTo: 'dashboard'}
         ]
     },
 
