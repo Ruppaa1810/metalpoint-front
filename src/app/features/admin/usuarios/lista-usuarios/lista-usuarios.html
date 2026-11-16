@@ -1,0 +1,53 @@
+<div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+    <div class="max-w-7xl mx-auto flex flex-col gap-4">
+
+        <app-page-header titulo="Usuarios"
+            descripcion="Mirá los usuarios registrados en la tienda" />
+
+        <!-- BUSCADOR -->
+        <form [formGroup]="formFiltros" class="flex">
+            <input pInputText formControlName="busqueda" class="flex-1"
+                placeholder="Buscar por nombre o email">
+        </form>
+
+        <!-- TABLA -->
+        <div class="card">
+            <p-table [value]="usuarios()" [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '40rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Fecha de registro</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-usuario>
+                    <tr>
+                        <td class="font-semibold">{{ usuario.name }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>
+                            @if (usuario.roles.length > 0) {
+                                <p-tag [value]="usuario.roles[0].name"
+                                    [severity]="usuario.roles[0].name === 'Administrador' ? 'contrast' : 'info'" />
+                            } @else {
+                                <p-tag value="Sin rol" severity="secondary" />
+                            }
+                        </td>
+                        <td>{{ usuario.created_at | date:'dd/MM/yyyy' }}</td>
+                    </tr>
+                </ng-template>
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="4">No se encontraron usuarios.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #footer>
+                    <tr>
+                        <td colspan="4">En total son {{ usuarios().length }} usuarios.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+    </div>
+</div>

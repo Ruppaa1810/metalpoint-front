@@ -18,6 +18,7 @@ import { Checkout } from './features/carrito/checkout/checkout';
 import { MisPedidos } from './features/pedidos/mis-pedidos/mis-pedidos';
 import { ListaPedidos } from './features/admin/pedidos/lista-pedidos/lista-pedidos';
 import { Dashboard } from './features/admin/dashboard/dashboard/dashboard';
+import { ListaUsuarios } from './features/admin/usuarios/lista-usuarios/lista-usuarios';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -34,6 +35,7 @@ export const routes: Routes = [
             { path: 'lista-productos', component: ListaProductos, title: 'ListaProductos' },
             { path: 'form-producto', component: FormProducto, title: 'FormProducto' },
             { path: 'lista-pedidos', component: ListaPedidos, title: 'ListaPedidos' },
+            { path: 'lista-usuarios', component: ListaUsuarios, title: 'ListaUsuarios' },
             { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
             { path: '**', redirectTo: 'dashboard'}
         ]

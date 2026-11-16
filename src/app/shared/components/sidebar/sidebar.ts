@@ -31,7 +31,8 @@ export class Sidebar {
       { label: 'Categorías', icon: 'pi pi-folder', routerLink: '/admin/lista-categorias' },
       { label: 'Marcas', icon: 'pi pi-tag', routerLink: '/admin/lista-marcas' },
       { label: 'Productos', icon: 'pi pi-box', routerLink: '/admin/lista-productos' },
-      { label: 'Pedidos', icon: 'pi pi-shopping-bag', routerLink: '/admin/lista-pedidos' }
+      { label: 'Pedidos', icon: 'pi pi-shopping-bag', routerLink: '/admin/lista-pedidos' },
+      { label: 'Usuarios', icon: 'pi pi-users', routerLink: '/admin/lista-usuarios' }
     ];
 
     // Si la última vez quedó en modo oscuro, lo vuelvo a activar
