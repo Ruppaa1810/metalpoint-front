@@ -77,8 +77,10 @@
             <span class="text-2xl font-black text-slate-900">$ {{ carritoService.total().toLocaleString('es-AR') }}</span>
           </div>
 
-          <p-button label="Continuar Compra" icon="pi pi-check-circle" class="w-full" styleClass="w-full" [disabled]="true"></p-button>
-          <p class="text-xs text-slate-400 mt-2 text-center">La confirmación de la compra llega con el módulo de pedidos.</p>
+          <a routerLink="/checkout">
+            <p-button label="Continuar Compra" icon="pi pi-check-circle" class="w-full" styleClass="w-full"></p-button>
+          </a>
+          <p class="text-xs text-slate-400 mt-2 text-center">Para comprar tenés que iniciar sesión.</p>
         </div>
       </div>
     </div>

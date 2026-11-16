@@ -13,6 +13,8 @@ import { Catalogo } from './features/catalogo/catalogo/catalogo';
 import { ProductoDetalle } from './features/catalogo/producto-detalle/producto-detalle';
 import { Carrito } from './features/carrito/carrito/carrito';
 import { adminGuard } from './core/guards/admin-guard';
+import { authGuard } from './core/guards/auth-guard';
+import { Checkout } from './features/carrito/checkout/checkout';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -38,6 +40,7 @@ export const routes: Routes = [
             { path: 'catalogo', component: Catalogo, title: 'Catalogo' },
             { path: 'producto/:id', component: ProductoDetalle, title: 'Producto' },
             { path: 'carrito', component: Carrito, title: 'Carrito' },
+            { path: 'checkout', component: Checkout, title: 'Checkout', canActivate: [authGuard] },  // hay que iniciar sesión
             { path: '', pathMatch: 'full', redirectTo: 'catalogo' }
         ]
     },

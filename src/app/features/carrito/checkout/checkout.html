@@ -1,0 +1,129 @@
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+  @if (pedidoConfirmado(); as pedido) {
+    <!-- Confirmación del pedido (RF-PP-007) -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center max-w-2xl mx-auto">
+      <i class="pi pi-check-circle text-6xl text-green-600 block mb-4"></i>
+      <h1 class="text-3xl font-bold text-slate-900 mb-2">¡Gracias por tu compra!</h1>
+      <p class="text-slate-600 mb-6">Tu pedido <strong>#{{ pedido.id }}</strong> quedó registrado.</p>
+
+      <div class="bg-slate-50 rounded-xl p-4 text-left space-y-1 text-sm mb-6">
+        <p><span class="text-slate-500">Total:</span> <strong>$ {{ pedido.total.toLocaleString('es-AR') }}</strong></p>
+        <p><span class="text-slate-500">Método de pago:</span> {{ pedido.metodo_pago }}</p>
+        <p><span class="text-slate-500">Estado del pago:</span> {{ pedido.estado_pago }}</p>
+        <p><span class="text-slate-500">Envío a:</span> {{ pedido.direccion_envio }}</p>
+      </div>
+
+      <!-- Instrucciones para el pago manual (CU-MP-C-003) -->
+      @switch (pedido.metodo_pago) {
+        @case ('Transferencia') {
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left text-sm text-amber-900 mb-6">
+            <p class="font-semibold mb-1">Instrucciones para la transferencia</p>
+            <p>Transferí $ {{ pedido.total.toLocaleString('es-AR') }} a la cuenta de MetalPoint (CBU 0000000000000000000000 · alias METALPOINT.PAGOS, datos de ejemplo) y poné el número de pedido #{{ pedido.id }} en el concepto.</p>
+          </div>
+        }
+        @case ('Efectivo') {
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left text-sm text-amber-900 mb-6">
+            <p class="font-semibold mb-1">Instrucciones para el pago en efectivo</p>
+            <p>Pagás $ {{ pedido.total.toLocaleString('es-AR') }} en efectivo cuando recibís el pedido. Tené a mano el número de pedido #{{ pedido.id }}.</p>
+          </div>
+        }
+      }
+
+      <div class="flex flex-wrap gap-3 justify-center">
+        <a routerLink="/mis-pedidos"><p-button label="Ver mis pedidos" icon="pi pi-list"></p-button></a>
+        <a routerLink="/catalogo"><p-button label="Seguir comprando" severity="secondary" [outlined]="true"></p-button></a>
+      </div>
+    </div>
+
+  } @else if (carritoService.items().length === 0) {
+    <div class="text-center py-20">
+      <i class="pi pi-shopping-cart text-6xl text-slate-300 block mb-6"></i>
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Tu carrito está vacío. ¡Empieza a comprar!</h2>
+      <a routerLink="/catalogo"><p-button label="Ir al catálogo" icon="pi pi-th-large"></p-button></a>
+    </div>
+
+  } @else {
+    <h1 class="text-3xl font-bold text-slate-900 mb-6">Finalizar compra</h1>
+
+    <form [formGroup]="formCheckout" (ngSubmit)="confirmarPedido()" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Envío -->
+        <section class="bg-white rounded-xl border border-slate-200 p-6">
+          <h2 class="font-bold text-lg text-slate-900 mb-4"><i class="pi pi-map-marker mr-2 text-amber-600"></i>Dirección de envío</h2>
+          <textarea pTextarea rows="2" fluid formControlName="direccion_envio" placeholder="Calle, número, ciudad"></textarea>
+          @if (formCheckout.get('direccion_envio')?.invalid && formCheckout.get('direccion_envio')?.touched) {
+            <small class="text-red-600">Ingresá la dirección de envío (mínimo 5 caracteres).</small>
+          }
+        </section>
+
+        <!-- Pago -->
+        <section class="bg-white rounded-xl border border-slate-200 p-6">
+          <h2 class="font-bold text-lg text-slate-900 mb-4"><i class="pi pi-credit-card mr-2 text-amber-600"></i>Método de pago</h2>
+
+          <div class="flex flex-col gap-3 mb-4">
+            @for (metodo of metodos; track metodo.id) {
+              <div class="flex items-center gap-2">
+                <p-radiobutton formControlName="metodo_pago" [value]="metodo.id" [inputId]="metodo.id" />
+                <label [for]="metodo.id" class="text-slate-700">{{ metodo.name }}</label>
+              </div>
+            }
+          </div>
+
+          @if (formCheckout.value.metodo_pago === 'Tarjeta') {
+            <div class="grid grid-cols-2 gap-4">
+              <div class="col-span-2">
+                <label class="block text-sm font-medium text-slate-600 mb-1">Número de tarjeta</label>
+                <input pInputText fluid formControlName="numero_tarjeta" placeholder="16 dígitos" maxlength="16" autocomplete="off">
+                @if (formCheckout.get('numero_tarjeta')?.invalid && formCheckout.get('numero_tarjeta')?.touched) {
+                  <small class="text-red-600">Tienen que ser 16 números.</small>
+                }
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1">Vencimiento</label>
+                <input pInputText fluid formControlName="vencimiento" placeholder="MM/AA" maxlength="5" autocomplete="off">
+                @if (formCheckout.get('vencimiento')?.invalid && formCheckout.get('vencimiento')?.touched) {
+                  <small class="text-red-600">Formato MM/AA.</small>
+                }
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1">CVV</label>
+                <input pInputText fluid formControlName="cvv" placeholder="123" maxlength="3" autocomplete="off">
+                @if (formCheckout.get('cvv')?.invalid && formCheckout.get('cvv')?.touched) {
+                  <small class="text-red-600">3 números.</small>
+                }
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3">Pago simulado: cualquier tarjeta de 16 números se aprueba, salvo las que terminan en 0002, que se rechazan.</p>
+          } @else {
+            <p class="text-sm text-slate-500">El pedido queda como "Pendiente de Pago" y al confirmarlo te mostramos cómo pagar.</p>
+          }
+        </section>
+      </div>
+
+      <!-- Resumen -->
+      <div>
+        <div class="bg-white rounded-xl border border-slate-200 p-6 lg:sticky lg:top-4">
+          <h2 class="font-bold text-lg text-slate-900 mb-4">Resumen</h2>
+          <ul class="space-y-2 text-sm">
+            @for (item of carritoService.items(); track item.producto.id) {
+              <li class="flex justify-between gap-3">
+                <span class="text-slate-600">{{ item.producto.nombre }} x{{ item.cantidad }}</span>
+                <span class="font-semibold text-slate-900 whitespace-nowrap">$ {{ (item.producto.precio * item.cantidad).toLocaleString('es-AR') }}</span>
+              </li>
+            }
+          </ul>
+          <p-divider></p-divider>
+          <div class="flex justify-between items-baseline mb-6">
+            <span class="font-bold text-slate-900">Total</span>
+            <span class="text-2xl font-black text-slate-900">$ {{ carritoService.total().toLocaleString('es-AR') }}</span>
+          </div>
+          <p-button type="submit" styleClass="w-full" class="w-full" [loading]="isLoading()" icon="pi pi-lock"
+            [label]="formCheckout.value.metodo_pago === 'Tarjeta' ? 'Pagar y Confirmar Pedido' : 'Confirmar Pedido (Pago Manual)'"></p-button>
+          <a routerLink="/carrito" class="block text-center text-sm text-amber-600 hover:underline mt-3">Volver al carrito</a>
+        </div>
+      </div>
+    </form>
+  }
+</div>
