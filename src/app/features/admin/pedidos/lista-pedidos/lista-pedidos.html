@@ -1,0 +1,103 @@
+<div class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+    <div class="max-w-7xl mx-auto flex flex-col gap-4">
+
+        <app-page-header titulo="Gestión de Pedidos"
+            descripcion="Mirá los pedidos de la tienda y actualizá su estado" />
+
+        <!-- FILTROS -->
+        <form [formGroup]="formFiltros" class="flex flex-col md:flex-row gap-3">
+            <p-select [options]="estados" formControlName="estado" placeholder="Todos los estados"
+                [showClear]="true" class="md:w-60" />
+            <input pInputText formControlName="busqueda" class="flex-1"
+                placeholder="Buscar por N° de pedido, nombre o email del cliente">
+        </form>
+
+        <!-- TABLA -->
+        <div class="card">
+            <p-table [value]="pedidos()" [paginator]="true" [rows]="10" [tableStyle]="{ 'min-width': '60rem' }">
+                <ng-template #header>
+                    <tr>
+                        <th>N°</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Pago</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-pedido>
+                    <tr>
+                        <td class="font-semibold">#{{ pedido.id }}</td>
+                        <td>
+                            <div>{{ pedido.user?.name }}</div>
+                            <div class="text-xs text-gray-500 dark:text-surface-400">{{ pedido.user?.email }}</div>
+                        </td>
+                        <td>{{ pedido.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+                        <td>$ {{ pedido.total.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}</td>
+                        <td>
+                            <p-tag [value]="pedido.estado_pago" [severity]="pedido.estado_pago === 'Pagado' ? 'success' : 'secondary'" />
+                        </td>
+                        <td>
+                            <p-tag [value]="pedido.estado" [severity]="getSeverity(pedido.estado)" />
+                        </td>
+                        <td>
+                            <p-button icon="pi pi-eye" [rounded]="true" [text]="true" [raised]="true"
+                                severity="secondary" (onClick)="verPedido(pedido)" />
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template #emptymessage>
+                    <tr>
+                        <td colspan="7" class="text-center">No hay pedidos para mostrar.</td>
+                    </tr>
+                </ng-template>
+                <ng-template #footer>
+                    <tr>
+                        <td colspan="7">En total son {{ pedidos().length }} pedidos.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- DETALLE DEL PEDIDO -->
+<p-dialog [header]="'Pedido #' + pedidoSeleccionado()?.id" [modal]="true" [visible]="verDialogo()"
+    (visibleChange)="verDialogo.set($event)" [style]="{ width: '50rem' }" [breakpoints]="{ '960px': '95vw' }">
+    @if (pedidoSeleccionado(); as pedido) {
+        <p class="mb-4 text-sm">
+            <span class="text-gray-500 dark:text-surface-400">Cliente:</span> {{ pedido.user?.name }} ({{ pedido.user?.email }})
+        </p>
+
+        <!-- Componente hijo reutilizado (el mismo que usa Mis pedidos) -->
+        <app-pedido-detalle [pedido]="pedido" />
+
+        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-surface-700">
+            <h3 class="font-bold mb-3">Estado del pedido:
+                <p-tag [value]="pedido.estado" [severity]="getSeverity(pedido.estado)" />
+            </h3>
+
+            @if (estadosSiguientes(pedido).length > 0) {
+                <form [formGroup]="formEstado" class="flex flex-col gap-3">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
+                        <p-select [options]="estadosSiguientes(pedido)" formControlName="estado"
+                            placeholder="Nuevo estado" appendTo="body" class="sm:w-60" />
+                        <p-button label="Guardar Estado" icon="pi pi-save" (onClick)="guardarEstado()" />
+                    </div>
+                    @if (formEstado.get('estado')?.invalid && formEstado.get('estado')?.touched) {
+                        <small class="text-red-600">Elegí el nuevo estado</small>
+                    }
+                    @if (formEstado.value.estado === 'Cancelado') {
+                        <div class="flex items-center gap-2">
+                            <p-checkbox formControlName="reintegrar_stock" [binary]="true" inputId="reintegrar" />
+                            <label for="reintegrar" class="text-sm">Reintegrar el stock de los productos</label>
+                        </div>
+                    }
+                </form>
+            } @else {
+                <p class="text-sm text-gray-500 dark:text-surface-400">El pedido ya está {{ pedido.estado }} y no se puede cambiar.</p>
+            }
+        </div>
+    }
+</p-dialog>

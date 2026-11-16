@@ -16,6 +16,7 @@ import { adminGuard } from './core/guards/admin-guard';
 import { authGuard } from './core/guards/auth-guard';
 import { Checkout } from './features/carrito/checkout/checkout';
 import { MisPedidos } from './features/pedidos/mis-pedidos/mis-pedidos';
+import { ListaPedidos } from './features/admin/pedidos/lista-pedidos/lista-pedidos';
 
 export const routes: Routes = [
     { path: 'login', component: Login },
@@ -30,6 +31,7 @@ export const routes: Routes = [
             { path: 'form-marca', component: FormMarca, title: 'FormMarca' },
             { path: 'lista-productos', component: ListaProductos, title: 'ListaProductos' },
             { path: 'form-producto', component: FormProducto, title: 'FormProducto' },
+            { path: 'lista-pedidos', component: ListaPedidos, title: 'ListaPedidos' },
             { path: '', pathMatch: 'full', redirectTo: 'lista-categorias' },
             { path: '**', redirectTo: 'lista-categorias'}
         ]
